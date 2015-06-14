@@ -1,22 +1,34 @@
 """
-|||
+DocBlockr Python v1.0.0
+
+Author: Adam Bullmer <adam.bullmer@gmail.com>
+Website: https://github.com/adambullmer/sublime-docblockr-python
+
+Credit to `spadgos` and the team at DocBlockr for providing some source code
+to support this project
 """
-import sublime, sublime_plugin
+import sublime
+import sublime_plugin
 import re
 
 def write(view, string):
-    """
-    |||
+    """Writes a string to the view as a snippet.
+
+    Arguments:
+        view   {sublime.View} -- view to have content written to
+        string {String}       -- String representation of a snippet to be
+            written to the view
     """
     view.run_command('insert_snippet', {'contents': string})
 
 def get_parser(view):
     """Returns the class of the parser to use.
 
-    Args:
-        view - The sublime text view in which this is executing in
+    Arguments:
+        view {sublime.View} -- The sublime text view in which this is executing in
+
     Returns:
-        class PythonParser if the current file type isn't a python file
+        {PythonParser} or None if the current file type isn't a python file
     """
     scope = view.scope_name(view.sel()[0].end())
     res = re.search(r'\bsource\.([a-z+\-]+)', scope)
@@ -29,12 +41,21 @@ def get_parser(view):
     return None
 
 def split_by_commas(string):
-    """
-    Split a string by unenclosed commas: that is, commas which are not inside of quotes or
-    brackets.
+    """Splits a string by unenclosed commas.
 
-    >>> split_by_commas('foo, bar(baz, quux), fwip = "hey, hi"')
-    ['foo', 'bar(baz, quux)', 'fwip = "hey, hi"']
+    Splits a string by commas that are not inside of:
+    - quotes
+    - brackets
+    Arguments:
+        string {String} -- String to be split. Usuall a function parameter
+            string
+
+    Examples:
+        >>> split_by_commas('foo, bar(baz, quux), fwip = "hey, hi"')
+        ['foo', 'bar(baz, quux)', 'fwip = "hey, hi"']
+
+    Returns:
+        {list} List of elements in the string that were delimited by commas
     """
     out = []
 
@@ -81,14 +102,29 @@ def split_by_commas(string):
     return out
 
 def escape(string):
-    """
-    |||
+    """Escapes the special characters.
+
+    Escapes characters that are also in snippet tab fields so that inserting into the view
+    doesn't accidentally create another tabbable field
+    Arguments:
+        string {String} -- String to be excaped
+
+    Examples:
+        >>> escape('function $test() {}')
+        'function \$test() \{\}'
+
+    Returns:
+        {String} String with escaped characters
     """
     return string.replace('$', r'\$').replace('{', r'\{').replace('}', r'\}')
 
 def counter():
-    """
-    |||
+    """Simple Iteratable Counter.
+
+    Starting from 0, will continue to give a new counter number every time
+    this function is iterated over, or with the use of `next()`
+    Yields:
+        {Integer} Current Counter Number
     """
     count = 0
     while True:
@@ -96,8 +132,25 @@ def counter():
         yield count
 
 def read_next_line(view, position, reverse=False):
-    """
-    |||
+    """Gets the next line of the view.
+
+    From the given position, will expand the region to the current line in the file,
+    grab the ending (beginning if reverse) position, and add (subtract if reverse) 1
+    to get the next line in the file. Will return False if the next line is either the
+    beginning or the end of the file. This function is iteratable to continuously
+    provide file lines
+    Arguments:
+        view     {sublime.View} -- View to be read
+        position {Integer}      -- Position in the view
+
+    Keyword Arguments:
+        reverse {Bool} -- If false, will read to the end of the file (default False)
+
+    Yields:
+        {sublime.Region} Region of the next line.
+
+    Returns:
+        {Bool} False when at the beginning or end of the file
     """
     current_line = view.line(position)
     modifier = 1
@@ -116,8 +169,22 @@ def read_next_line(view, position, reverse=False):
         yield current_line
 
 class DocblockrPythonCommand(sublime_plugin.TextCommand):
-    """
-    |||
+    """Sublime Text Command.
+
+    Command to be run by Sublime Text
+
+    Extends:
+        sublime_plugin.TextCommand
+
+    Variables:
+        position        {Integer}
+        trailing_rgn    {String}
+        trailing_string {String}
+        settings        {String}
+        indent_spaces   {String}
+        parser          {Object}
+        line            {String}
+        contents        {String}
     """
     position = 0
     trailing_rgn = ''
@@ -129,8 +196,13 @@ class DocblockrPythonCommand(sublime_plugin.TextCommand):
     contents = ''
 
     def run(self, edit):
-        """
-        |||
+        """Sublime Command Entrypoint
+
+        Entrypoint for the Sublime Text Command. Outputs the result of the parsing to
+        the view.
+
+        Arguments:
+            edit {sublime.edit} -- Sublime Edit buffer
         """
         self.initialize(self.view)
 
@@ -147,8 +219,14 @@ class DocblockrPythonCommand(sublime_plugin.TextCommand):
         write(self.view, snippet)
 
     def initialize(self, view):
-        """
-        |||
+        """Setup the command's settings.
+
+        Begins preparsing the file to gather some basic information.
+        - Which parser to use
+        - Store any trailing characters
+
+        Arguments:
+            view {sublime.View} -- The view to be edited
         """
         self.settings = view.settings()
         position = view.sel()[0].end()
@@ -166,10 +244,16 @@ class DocblockrPythonCommand(sublime_plugin.TextCommand):
         self.contents = parser.get_definition_contents(view, view.line(position).end() + 1)
 
     def create_snippet(self, parsed_attributes):
-        """
-        |||
-        """
+        """Converts dictionary of attributes into a snippet string.
 
+        Reads the dictionary of attributes and substitutes their relevant values into
+        the snippet templates, returning the resulting concatenated string.
+        Arguments:
+            parsed_attributes {Dictionary} -- attribute -> value store
+
+        Returns:
+            {String} snippet string
+        """
         tab_index = counter()
 
         # Make sure the summary line has the trailing text, or a placeholder
@@ -221,8 +305,12 @@ class DocblockrPythonCommand(sublime_plugin.TextCommand):
 
 
 class PythonParser(object):
-    """
-    |||
+    """Parser class Specific to Python.
+
+    Contains the relevant parsing configuration to be able to handle Python style
+    source files.
+    Variables:
+        closing_string {String}
     """
     closing_string = '"""'
 
@@ -231,8 +319,19 @@ class PythonParser(object):
 
     @classmethod
     def get_definition(cls, view, position):
-        """
-        |||
+        """Gets the definition line.
+
+        String representation fo the line above the docstring
+
+        Arguments:
+            view {sublime.View} -- The sublime view in which this is executing
+            position {Integer} -- Position of the docstring
+
+        Decorators:
+            classmethod
+
+        Returns:
+            {String} Representation of the definition line
         """
         # At beginning of the module
         if position is 0:
@@ -242,21 +341,38 @@ class PythonParser(object):
 
     @classmethod
     def get_definition_contents(cls, view, position):
-        """
-        |||
-        """
-        pass
+        """Gets the relevant contents of the module/class/function.
 
-    @classmethod
-    def get_next_line(cls, view, position):
-        """
-        |||
+        For Modules and Classes, will only provide the lines on the same
+        indentation level as the docstring, so that the interpreter is only looking
+        at what is possibly relevant. For functions, the whole content of the function
+        if returned, since we will be looking for return/yield values, we cannot be
+        certain won which indentation that will be made, if at all.
+
+        Arguments:
+            view {sublime.View} -- The sublime view in which this is executing
+            position {Integer} -- Position the docstring was created on
+
+        Decorators:
+            classmethod
+
+        Returns:
+            {String} Contents that matter
         """
         return view.line(view.line(position).end() + 1)
 
     def parse(self, line, contents):
-        """
-        |||
+        """Central command to parse the areas above and below the docstring.
+
+        Tries to determine which type of docstring should be created based upon
+        whether the parser returns any output
+
+        Arguments:
+            line {String} -- Definition Line
+            contents {String} -- Contents of the module/class/function
+
+        Returns:
+            {Dictionary} Store of attributes and their values
         """
         # At beginning of the module
         if not line:
@@ -272,16 +388,36 @@ class PythonParser(object):
 
         return {}
 
-    def parse_module(self, line, contents):
+    @classmethod
+    def parse_module(self, contents):
+        """Parses the whole module file to find module level variables.
+
+        Reads the lines in the module contents to get the names of the module level variables.
+        Arguments:
+            contents {String} -- Module Body
+
+        Decorators:
+            classmethod
+
+        Returns:
+            {Dictionary} Dictionary of attributes to create snippets from
         """
-        |||
-        """
-        pass
+        return {}
 
     @classmethod
     def parse_class(cls, line, contents):
-        """
-        |||
+        """Parses a class line to determine its attributes.
+
+        Reads the class line to determine what other classes it extends
+        Arguments:
+            line     {String} -- Line containing the class definition
+            contents {String} -- Class Body
+
+        Decorators:
+            classmethod
+
+        Returns:
+            {Dictionary} Dictionary of attributes to create snippets from
         """
         parsed_class = {}
 
@@ -306,8 +442,18 @@ class PythonParser(object):
 
     @classmethod
     def parse_function(cls, line, contents):
-        """
-        |||
+        """Parses a function for its arguments
+
+        Reads the function line to parse out the args and kwargs.
+        Arguments:
+            line     {String} -- Line containing the function definition
+            contents {String} -- Function body
+
+        Decorators:
+            classmethod
+
+        Returns:
+            {Dictionary} Parsed valued group by type
         """
         parsed_function = {}
 
@@ -337,13 +483,18 @@ class PythonParser(object):
         return parsed_function
 
     def is_docstring_closed(self, view, position):
-        """
+        """Checks if the current docstring is supposed to be closed.
+
         Keep reading lines until we reach the end of the file, class, or function
         We will assume that if the indentation level is ever lower than present, and no
         closing docstring has been found yet, the component has ended and needs to be closed
 
         Arguments:
-            @arg view {sublime.View} Current Sublime Text View
+            view     {sublime.View} -- Current Sublime Text View
+            position {Integer}      -- Position in the view where the docstring is
+
+        Returns:
+            {Bool} True if the docstring is confirmed closed
         """
         indentation_level = view.indentation_level(position)
 
