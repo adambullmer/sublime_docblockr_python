@@ -2,8 +2,8 @@
   "scope": "source.python string.quoted.double.block",
   "completions": [
     { "trigger": "@var",     "contents": "@var ${1:[name]} {${2:[type]}} ${3:[description]}" },
-    { "trigger": "@arg",     "contents": "@arg {${1:[type]}} ${2:[description]}" },
-    { "trigger": "@kwarg",   "contents": "${1:[name]} -- ${2:[description]} (default ${3:[default value]})" },
+    { "trigger": "@arg",     "contents": "${1:[name]} {${2:[type]}} -- ${3:[description]}" },
+    { "trigger": "@kwarg",   "contents": "${1:[name]} {${2:[type]}} -- ${3:[description]} (default ${4:[default value]})" },
     { "trigger": "@example", "contents": ">>> ${1:[function name]}(${2:[arguments]})\n${3:[result]}" },
     { "trigger": "@extends", "contents": "@extends {${1:[type]}}" },
     { "trigger": "@returns", "contents": "@returns {${1:[type]}} ${2:[description]}" }

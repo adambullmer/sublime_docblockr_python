@@ -19,7 +19,7 @@ There isn't a key command to start this plugin, it is triggerg by hitting **ente
 
 Known Issues
 ------------
-- Doesn't detect if a docstring is already closed
+- Only detects closed docstring if it is on a line of the same indentation, and has no text in front of it. Single Line docstrings are converted to block
 - Doesn't process module or class variables
 
 Roadmap
@@ -27,5 +27,7 @@ Roadmap
 - Determine / Guess at variable and return value types
 - `Raises` section of documentation
 - `Decorators` section of documentation
-- Better README
 - Extended Python syntax with docstring keyword highlighting
+- Unit Tests!
+- More completions!
+- Better README

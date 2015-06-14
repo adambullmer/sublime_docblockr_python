@@ -95,6 +95,26 @@ def counter():
         count += 1
         yield count
 
+def read_next_line(view, position, reverse=False):
+    """
+    |||
+    """
+    current_line = view.line(position)
+    modifier = 1
+    if reverse is True:
+        modifier = -1
+
+    while True:
+        next_line = current_line.end() + modifier
+
+        # Ensure within bounds of the view
+        if not (next_line < view.size() and next_line > 0):
+            return False
+
+        current_line = view.line(next_line)
+
+        yield current_line
+
 class DocblockrPythonCommand(sublime_plugin.TextCommand):
     """
     |||
@@ -113,6 +133,12 @@ class DocblockrPythonCommand(sublime_plugin.TextCommand):
         |||
         """
         self.initialize(self.view)
+
+        # If this docstring is already closed, then generate a new line
+        if self.parser.is_docstring_closed(self.view, self.view.sel()[0].end()) is True:
+            write(self.view, '\n')
+            return
+
         self.view.erase(edit, self.trailing_rgn)
 
         output = self.parser.parse(self.line, self.contents)
@@ -159,13 +185,15 @@ class DocblockrPythonCommand(sublime_plugin.TextCommand):
             if attribute_type is 'arguments':
                 snippet += 'Arguments:\n'
                 for attribute in attributes:
-                    snippet += '\t@arg ' + attribute
+                    snippet += '\t' + attribute
+                    snippet += ' {${' + str(next(tab_index)) + ':[type]}} --'
                     snippet += ' ${' + str(next(tab_index)) + ':[description]}\n'
             elif attribute_type is 'keyword_arguments':
                 snippet += 'Keyword Arguments:\n'
                 for attribute in attributes:
-                    snippet += '\t@kwarg ' + attribute
-                    snippet += '${' + str(next(tab_index)) + ':[description]}'
+                    snippet += '\t' + attribute
+                    snippet += ' {${' + str(next(tab_index)) + ':[type]}} --'
+                    snippet += ' ${' + str(next(tab_index)) + ':[description]}'
                     snippet += ' (default ${' + str(next(tab_index)) + '})\n'
             elif attribute_type is 'returns':
                 returns_snippet = ''
@@ -306,3 +334,43 @@ class PythonParser(object):
         parsed_function['returns'] = {}
 
         return parsed_function
+
+    def is_docstring_closed(self, view, position):
+        """
+        Keep reading lines until we reach the end of the file, class, or function
+        We will assume that if the indentation level is ever lower than present, and no
+        closing docstring has been found yet, the component has ended and needs to be closed
+
+        Arguments:
+            @arg view {sublime.View} Current Sublime Text View
+        """
+        indentation_level = view.indentation_level(position)
+
+        # Check the current line first, and ignore if docstring is closed on this line
+        line = view.substr(view.line(position))
+        match = re.search(r'^\s*""".*"""\s*$', line)
+
+        if match is not None:
+            return False
+
+        for current_line in read_next_line(view, position):
+            # Not an empty line
+            current_line_string = view.substr(current_line).rstrip()
+            if len(current_line_string) is 0:
+                continue
+
+            # Not on a more indented line
+            current_indentation = view.indentation_level(current_line.end())
+            if current_indentation > indentation_level:
+                continue
+
+            # Still within the same indentation level
+            if current_indentation < indentation_level:
+                break
+
+            # Line only contains whitespace and """
+            if re.search(r'^\s*"""', current_line_string) is not None:
+                return True
+
+
+        return False
