@@ -324,6 +324,7 @@ class PythonParser(object):
 
             if '=' in argument:
                 argument_type = 'keyword_arguments'
+                argument = argument.split('=')[0].rstrip()
 
             if argument_type not in parsed_function:
                 parsed_function[argument_type] = []
@@ -371,6 +372,5 @@ class PythonParser(object):
             # Line only contains whitespace and """
             if re.search(r'^\s*"""', current_line_string) is not None:
                 return True
-
 
         return False
