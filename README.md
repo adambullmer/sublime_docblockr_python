@@ -20,14 +20,15 @@ There isn't a key command to start this plugin, it is triggerg by hitting **ente
 Known Issues
 ------------
 - Only detects closed docstring if it is on a line of the same indentation, and has no text in front of it. Single Line docstrings are converted to block
-- Doesn't process module or class variables
 
 Roadmap
 -------
+- Process module or class variables
+- Process Decorators
 - Determine / Guess at variable and return value types
 - `Raises` section of documentation
 - `Decorators` section of documentation
-- Extended Python syntax with docstring keyword highlighting
+- More Robust Syntax Highlighting in Docstrings
 - Unit Tests!
 - More completions!
 - Better README
