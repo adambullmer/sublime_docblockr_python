@@ -267,33 +267,31 @@ class DocblockrPythonCommand(sublime_plugin.TextCommand):
                 continue
 
             if attribute_type is 'arguments':
-                snippet += 'Arguments:\n'
+                snippet += '\nArguments:\n'
                 for attribute in attributes:
                     snippet += '\t' + attribute
                     snippet += ' {${' + str(next(tab_index)) + ':[type]}} --'
                     snippet += ' ${' + str(next(tab_index)) + ':[description]}\n'
             elif attribute_type is 'keyword_arguments':
-                snippet += 'Keyword Arguments:\n'
+                snippet += '\nKeyword Arguments:\n'
                 for attribute in attributes:
                     snippet += '\t' + attribute
                     snippet += ' {${' + str(next(tab_index)) + ':[type]}} --'
                     snippet += ' ${' + str(next(tab_index)) + ':[description]}'
                     snippet += ' (default ${' + str(next(tab_index)) + '})\n'
             elif attribute_type is 'returns':
-                returns_snippet = ''
+                snippet += 'Returns:\n\t'
                 if isinstance(attribute, {}):
-                    returns_snippet += '${' + str(next(tab_index)) + ':[type]}'
+                    snippet += '${' + str(next(tab_index)) + ':[type]}'
                 else:
-                    returns_snippet += attribute
-
-                returns_snippet += ' ${' + str(next(tab_index)) + ':[description]}'
-
-                snippet += 'Returns:\n\t' + returns_snippet + '\n'
+                    snippet += attribute
+                snippet += ' ${' + str(next(tab_index)) + ':[description]}\n'
             elif attribute_type is 'extends':
+                snippet += '\nExtends:\n\t'
                 for attribute in attributes:
-                    snippet += '@extends ' + attribute + '\n'
+                    snippet += attribute + '\n'
             elif attribute_type is 'variables':
-                snippet += 'Variables:\n'
+                snippet += '\nVariables:\n'
                 for attribute in attributes:
                     snippet += '\t@var ' + attribute
                     snippet += ' ${' + str(next(tab_index)) + ':[type]}'
@@ -359,7 +357,7 @@ class PythonParser(object):
         Returns:
             {String} Contents that matter
         """
-        return view.line(view.line(position).end() + 1)
+        pass
 
     def parse(self, line, contents):
         """Central command to parse the areas above and below the docstring.
@@ -376,7 +374,7 @@ class PythonParser(object):
         """
         # At beginning of the module
         if not line:
-            return ''
+            return self.parse_module(contents)
 
         output = self.parse_class(line, contents)
         if output is not None:
