@@ -6,11 +6,9 @@ The main goal of this project is to help developer provide better documentation 
 
 Installation
 ------------
-[Package Control](https://sublime.wbond.net/installation)
-
-1. Open Package Control: `Preferences -> Package Control`
-2. Select `Package Control: Install Package`
-3. Type `DocBlockr Python` into the search box and select the package to install it
+Manually
+1. Go to the [Latest Release](https://github.com/adambullmer/sublime-docblockr-python/releases/latest) and download the `DocString.Python.sublime-package` file.
+2. Move this file to your `Installed Packages` directory. (`Preferences > Browse Packages...` and go up one directory to see `Installed Packages`)
 
 Usage
 -----
@@ -28,7 +26,6 @@ Roadmap
 - Determine / Guess at variable and return value types
 - `Raises` section of documentation
 - `Decorators` section of documentation
-- More Robust Syntax Highlighting in Docstrings
 - Unit Tests!
 - More completions!
 - Better README
