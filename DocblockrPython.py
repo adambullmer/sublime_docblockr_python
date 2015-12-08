@@ -263,8 +263,6 @@ class DocblockrPythonCommand(sublime_plugin.TextCommand):
         snippet = self.trailing_string + '\n\n${' + str(next(tab_index)) + ':[description]}\n'
 
         for attribute_type, attributes in parsed_attributes.items():
-            if len(attributes) is 0:
-                continue
 
             if attribute_type is 'arguments':
                 snippet += '\nArguments:\n'
@@ -281,10 +279,13 @@ class DocblockrPythonCommand(sublime_plugin.TextCommand):
                     snippet += ' (default ${' + str(next(tab_index)) + '})\n'
             elif attribute_type is 'returns':
                 snippet += 'Returns:\n\t'
-                if isinstance(attribute, {}):
-                    snippet += '${' + str(next(tab_index)) + ':[type]}'
-                else:
-                    snippet += attribute
+                try:
+                    if attribute and isinstance(attribute, {}):
+                        snippet += '${' + str(next(tab_index)) + ':[type]}'
+                    else:
+                        snippet += attribute
+                except:
+                    pass
                 snippet += ' ${' + str(next(tab_index)) + ':[description]}\n'
             elif attribute_type is 'extends':
                 snippet += '\nExtends:\n\t'
