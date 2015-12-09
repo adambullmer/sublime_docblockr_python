@@ -6,10 +6,10 @@
     "command": "docblockr_python",
     "context": [
       { "key": "selector",              "operator": "equal",          "operand": "string.quoted.double.block", "match_all": false },
-      { "key": "setting.auto_indent",   "operator": "equal",          "operand": true,                     "match_all": true },
-      { "key": "selection_empty",       "operator": "equal",          "operand": true,                     "match_all": true },
-      { "key": "auto_complete_visible", "operator": "equal",          "operand": false,                    "match_all": true },
-      { "key": "preceding_text",        "operator": "regex_contains", "operand": "^\\s*(\"\"\")\\s*$", "match_all": true }
+      { "key": "setting.auto_indent",   "operator": "equal",          "operand": true,                         "match_all": true },
+      { "key": "selection_empty",       "operator": "equal",          "operand": true,                         "match_all": true },
+      { "key": "auto_complete_visible", "operator": "equal",          "operand": false,                        "match_all": true },
+      { "key": "preceding_text",        "operator": "regex_contains", "operand": "^\\s*(\"\"\")\\s*$",         "match_all": true }
     ]
   },
   {
@@ -19,10 +19,10 @@
     "command": "docblockr_python",
     "context": [
       { "key": "selector",              "operator": "equal",          "operand": "string.quoted.double.block", "match_all": false },
-      { "key": "setting.auto_indent",   "operator": "equal",          "operand": true,                     "match_all": true },
-      { "key": "selection_empty",       "operator": "equal",          "operand": true,                     "match_all": true },
-      { "key": "auto_complete_visible", "operator": "equal",          "operand": false,                    "match_all": true },
-      { "key": "preceding_text",        "operator": "regex_contains", "operand": "^\\s*(\"\"\")\\s*$", "match_all": true }
+      { "key": "setting.auto_indent",   "operator": "equal",          "operand": true,                         "match_all": true },
+      { "key": "selection_empty",       "operator": "equal",          "operand": true,                         "match_all": true },
+      { "key": "auto_complete_visible", "operator": "equal",          "operand": false,                        "match_all": true },
+      { "key": "preceding_text",        "operator": "regex_contains", "operand": "^\\s*(\"\"\")\\s*$",         "match_all": true }
     ]
   },
   {
@@ -32,10 +32,10 @@
     "command": "docblockr_python",
     "context": [
       { "key": "selector",              "operator": "equal",          "operand": "string.quoted.double.block", "match_all": false },
-      { "key": "setting.auto_indent",   "operator": "equal",          "operand": true,                     "match_all": true },
-      { "key": "selection_empty",       "operator": "equal",          "operand": true,                     "match_all": true },
-      { "key": "auto_complete_visible", "operator": "equal",          "operand": false,                    "match_all": true },
-      { "key": "preceding_text",        "operator": "regex_contains", "operand": "^\\s*(\"\"\")\\s*$", "match_all": true }
+      { "key": "setting.auto_indent",   "operator": "equal",          "operand": true,                         "match_all": true },
+      { "key": "selection_empty",       "operator": "equal",          "operand": true,                         "match_all": true },
+      { "key": "auto_complete_visible", "operator": "equal",          "operand": false,                        "match_all": true },
+      { "key": "preceding_text",        "operator": "regex_contains", "operand": "^\\s*(\"\"\")\\s*$",         "match_all": true }
     ]
   }
 ]

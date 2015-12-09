@@ -1,0 +1,9 @@
+{
+	/**
+	 * This option dictates which style of docstrings to use, when parsing docstrings
+	 *
+	 * Available Options:
+	 * [PEP0257, docblock, google, numpy, sphinx]
+	 */
+	"formatter": "docblock"
+}
