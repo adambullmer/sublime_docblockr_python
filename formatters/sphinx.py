@@ -1,8 +1,7 @@
-from .base import BaseFormatter, FormatterMeta
+from .base import Base
 
 
-class SphinxFormatter(BaseFormatter):
-    __metaclass__ = FormatterMeta
+class SphinxFormatter(Base):
     name = 'sphinx'
 
     def decorators(self, attributes):
@@ -12,91 +11,84 @@ class SphinxFormatter(BaseFormatter):
         return ''
 
     def arguments(self, attributes):
-        section = '\n'
-        template = ':param {attribute}: ${{{tab_index_1}:[description]}}\n'
-        template += ':type {attribute}: ${{{tab_index_2}:[type]}}\n'
+        section = ''
+        template = ':param {name}: {description}\n'
+        template += ':type {name_1}: {type}\n'
 
-        for attr in attributes:
+        for attr in attributes['arguments']:
             section += template.format(
-                attribute=attr,
-                tab_index_1=next(self.tab_index),
-                tab_index_2=next(self.tab_index),
+                name=self._generate_field('name', attr['name']),
+                description=self._generate_field('description'),
+                name_1=self._generate_field('name', attr['name']),
+                type=self._generate_field('type', attr['type']),
             )
+
+        section += self.keyword_arguments(attributes['keyword_arguments'])
 
         return section
 
     def keyword_arguments(self, attributes):
         section = ''
-        template = ':param {attribute}: ${{{tab_index_1}:[description]}}, defaults to ${{{tab_index_2}:[default]}}\n'
-        template += ':type {attribute}: ${{{tab_index_3}:[type]}}, optional\n'
+        template = ':param {name}: {description}, defaults to {default}\n'
+        template += ':type {name_1}: {type}, optional\n'
 
         for attr in attributes:
             section += template.format(
-                attribute=attr,
-                default='',
-                tab_index_1=next(self.tab_index),
-                tab_index_2=next(self.tab_index),
-                tab_index_3=next(self.tab_index),
+                name=self._generate_field('name', attr['name']),
+                description=self._generate_field('description'),
+                default=self._generate_field('default', attr['default']),
+                name_1=self._generate_field('name', attr['name']),
+                type=self._generate_field('type', attr['type']),
             )
 
         return section
 
     def returns(self, attribute):
-        section = '\n'
-        template = ':returns: ${{{tab_index_1}:[description]}}\n'
-        template += ':rtype: {{{attribute}}}'
-        reserved_space = next(self.tab_index)
-
-        if attribute == {}:
-            attribute = '${{{tab_index_2}:[type]}}'.format(
-                tab_index_2=next(self.tab_index)
-            )
+        section = ''
+        template = ':returns: {description}\n'
+        template += ':rtype: {{{type}}}\n'
 
         section += template.format(
-            attribute=attribute,
-            tab_index_1=reserved_space
+            description=self._generate_field('description'),
+            type=self._generate_field('type', attribute['type']),
         )
 
         return section
 
     def yields(self, attribute):
-        template = ':returns: ${{{tab_index_1}:[description]}}\n'
-        template += ':rtype: {{{attribute}}}'
-
-        if attribute == {}:
-            attribute = '${{{tab_index_2}}}:[type]'.format(
-                tab_index_2=next(self.tab_index)
-            )
+        section = ''
+        template = ':returns: {description}\n'
+        template += ':rtype: {{{type}}}\n'
 
         section += template.format(
-            attribute=attribute,
-            tab_index_1=next(self.tab_index)
+            description=self._generate_field('description'),
+            type=self._generate_field('type', attribute['type']),
         )
 
         return section
 
     def raises(self, attributes):
-        section = '\n:raises:'
-        template = ' {{{attribute}}},'
+        section = ':raises:'
+        template = ' {name},'
 
         for attr in attributes:
             section += template.format(
-                attribute=attr,
-                tab_index_1=next(self.tab_index)
+                name=self._generate_field('name', attr),
             )
 
         return section[:-1] + '\n'
 
     def variables(self, attributes):
-        section = '\n'
-        template = ':param {attribute}: ${{{tab_index_1}:[description]}}\n'
-        template += ':type {attribute}: ${{{tab_index_2}:[type]}}\n'
+        section = ''
+        template = ':param {name}: {description}\n'
+        template += ':type {name_1}: {type}\n'
 
         for attr in attributes:
             section += template.format(
-                attribute=attr,
-                tab_index_1=next(self.tab_index),
-                tab_index_2=next(self.tab_index),
+                name=self._generate_field('name', attr['name']),
+                description=self._generate_field('description'),
+                name_1=self._generate_field('name', attr['name']),
+                type=self._generate_field('type', attr['type']),
             )
 
         return section
