@@ -1,0 +1,34 @@
+[
+    {
+        "id": "preferences",
+        "children":
+        [
+            {
+                "id": "package-settings",
+                "children":
+                [
+                    {
+                        "caption": "DocBlockr Python",
+                        "children":
+                        [
+                            {
+                                "caption": "Settings – Default",
+                                "command": "open_file", "args":
+                                {
+                                    "file": "${packages}/docblockr_python/DocblockrPython.sublime-settings"
+                                }
+                            },
+                            {
+                                "caption": "Settings – User",
+                                "command": "open_file", "args":
+                                {
+                                    "file": "${packages}/User/DocblockrPython.sublime-settings"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]
