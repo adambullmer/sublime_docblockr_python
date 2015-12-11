@@ -1,5 +1,5 @@
 """
-DocBlockr Python v1.0.0
+DocBlockr Python v1.3.0
 
 Author: Adam Bullmer <adam.bullmer@gmail.com>
 Website: https://github.com/adambullmer/sublime-docblockr-python
