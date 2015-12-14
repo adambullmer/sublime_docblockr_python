@@ -110,7 +110,9 @@ class DocblockrPythonCommand(sublime_plugin.TextCommand):
             view {sublime.View} -- The view to be edited
         """
         self.view_settings = view.settings()
-        self.project_settings = view.window().project_data().get('DocblockrPython', {})
+
+        project_data = view.window().project_data() or {}
+        self.project_settings = project_data.get('DocblockrPython', {})
 
         position = view.sel()[0].end()
 
