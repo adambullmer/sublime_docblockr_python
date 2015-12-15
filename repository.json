@@ -1,0 +1,26 @@
+{
+	"schema_version": "3.0.0",
+	"dependencies": [],
+	"packages": [{
+		"name": "DocBlockr Python",
+		"details": "https://github.com/adambullmer/sublime-docblockr-python",
+		"readme": "https://raw.githubusercontent.com/adambullmer/sublime-docblockr-python/master/README.md",
+		"issues": "https://github.com/adambullmer/sublime-docblockr-python/issues",
+		"donate": "https://gratipay.com/adambullmer/",
+		"author": "adambullmer",
+		"releases": {
+			"platforms": "*",
+			"sublime_text": ">=3000",
+			"tags": true,
+		},
+		"labels": [
+			"python",
+			"docstring",
+			"automatic",
+			"formatter",
+			"generator",
+			"auto-complete",
+			"snippets"
+		]
+	}]
+}
