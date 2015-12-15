@@ -1,6 +1,8 @@
 import logging
 import re
 
+from DocBlockr import jsdocs
+
 log = logging.getLogger(__name__)
 
 def get_parser(view):
@@ -21,68 +23,6 @@ def get_parser(view):
         return PythonParser(view_settings)
 
     return None
-
-
-def split_by_commas(string):
-    """Splits a string by unenclosed commas.
-
-    Splits a string by commas that are not inside of:
-    - quotes
-    - brackets
-    Arguments:
-        string {String} -- String to be split. Usuall a function parameter
-            string
-
-    Examples:
-        >>> split_by_commas('foo, bar(baz, quux), fwip = "hey, hi"')
-        ['foo', 'bar(baz, quux)', 'fwip = "hey, hi"']
-
-    Returns:
-        {list} List of elements in the string that were delimited by commas
-    """
-    out = []
-
-    if not string:
-        return out
-
-    # the current token
-    current = ''
-
-    # characters which open a section inside which commas are not separators between different
-    # arguments
-    open_quotes = '"\'<({'
-    # characters which close the section. The position of the character here should match the
-    # opening indicator in `open_quotes`
-    close_quotes = '"\'>)}'
-
-    matching_quote = ''
-    inside_quotes = False
-    is_next_literal = False
-
-    for char in string:
-        if is_next_literal:  # previous char was a \
-            current += char
-            is_next_literal = False
-        elif inside_quotes:
-            if char == '\\':
-                is_next_literal = True
-            else:
-                current += char
-                if char == matching_quote:
-                    inside_quotes = False
-        else:
-            if char == ',':
-                out.append(current.strip())
-                current = ''
-            else:
-                current += char
-                quote_index = open_quotes.find(char)
-                if quote_index > -1:
-                    matching_quote = close_quotes[quote_index]
-                    inside_quotes = True
-
-    out.append(current.strip())
-    return out
 
 
 def read_next_line(view, position, reverse=False):
@@ -122,14 +62,6 @@ def read_next_line(view, position, reverse=False):
         current_line = view.line(next_line)
 
         yield current_line
-
-
-def is_numeric(val):
-    try:
-        float(val)
-        return True
-    except ValueError:
-        return False
 
 
 class PythonParser:
@@ -336,7 +268,7 @@ class PythonParser:
         if not extends:
             return None
 
-        extends = split_by_commas(extends.group(1))
+        extends = jsdocs.splitByCommas(extends.group(1))
         parsed_extends = []
         for extend in extends:
             if extend == 'object':
@@ -430,7 +362,7 @@ class PythonParser:
             return None
 
         excluded_parameters = ['self', 'cls']
-        arguments = split_by_commas(arguments.group(1))
+        arguments = jsdocs.splitByCommas(arguments.group(1))
 
         for argument in arguments:
             if argument in excluded_parameters:
@@ -585,7 +517,7 @@ class PythonParser:
 
         first_char = value[0]
 
-        if is_numeric(value):
+        if jsdocs.is_numeric(value):
             return "number"
 
         if first_char in ['\"', '\'']:

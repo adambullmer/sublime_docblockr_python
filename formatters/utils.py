@@ -2,7 +2,7 @@ import logging
 import sublime
 import importlib
 
-from docblockr_python.formatters.registry import REGISTRY
+from DocBlockr_Python.formatters.registry import REGISTRY
 
 log = logging.getLogger(__name__)
 

@@ -9,7 +9,7 @@ Installation
 ------------
 **Manually**
 Until this project can get onto Package Control, the only way to install it is manually.
-1. Go to the [Latest Release](https://github.com/adambullmer/sublime-docblockr-python/releases/latest) and download the `docblockr_python.sublime-package` file.
+1. Go to the [Latest Release](https://github.com/adambullmer/sublime-docblockr-python/releases/latest) and download the `DocBlockr_Python.sublime-package` file.
 1. Move this file to your `Installed Packages` directory. (`Preferences > Browse Packages...` and go up one directory to see `Installed Packages`)
 1. If you are updating your existing install, a restart of Sublime Text will be in order.
 

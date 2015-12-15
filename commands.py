@@ -12,42 +12,15 @@ import sublime
 import sublime_plugin
 import re
 
-from docblockr_python.formatters.utils import get_formatter, get_setting
-from docblockr_python.parsers.parser import get_parser
+from DocBlockr import jsdocs
+
+from DocBlockr_Python.formatters.utils import get_formatter, get_setting
+from DocBlockr_Python.parsers.parser import get_parser
 
 log = logging.getLogger(__name__)
 
 
-def write(view, string):
-    """Writes a string to the view as a snippet.
-
-    Arguments:
-        view   {sublime.View} -- view to have content written to
-        string {String}       -- String representation of a snippet to be
-            written to the view
-    """
-    view.run_command('insert_snippet', {'contents': string})
-
-
-def escape(string):
-    """Escapes the special characters.
-
-    Escapes characters that are also in snippet tab fields so that inserting into the view
-    doesn't accidentally create another tabbable field
-    Arguments:
-        string {String} -- String to be excaped
-
-    Examples:
-        >>> escape('function $test() {}')
-        'function \$test() \{\}'
-
-    Returns:
-        {String} String with escaped characters
-    """
-    return string.replace('$', r'\$').replace('{', r'\{').replace('}', r'\}')
-
-
-class DocblockrPythonCommand(sublime_plugin.TextCommand):
+class DocblockrPythonCommand(jsdocs.JsdocsCommand):
     """Sublime Text Command.
 
     Command to be run by Sublime Text
@@ -89,7 +62,7 @@ class DocblockrPythonCommand(sublime_plugin.TextCommand):
 
         # If this docstring is already closed, then generate a new line
         if self.parser.is_docstring_closed(self.view, self.view.sel()[0].end()) is True:
-            write(self.view, '\n')
+            jsdocs.write(self.view, '\n')
             return
 
         self.view.erase(edit, self.trailing_rgn)
@@ -97,7 +70,7 @@ class DocblockrPythonCommand(sublime_plugin.TextCommand):
         output = self.parser.parse(self.line, self.contents)
 
         snippet = self.create_snippet(output)
-        write(self.view, snippet)
+        jsdocs.write(self.view, snippet)
 
     def initialize(self, view):
         """Setup the command's settings.
@@ -120,7 +93,7 @@ class DocblockrPythonCommand(sublime_plugin.TextCommand):
         self.trailing_rgn = sublime.Region(position, view.line(position).end())
         self.trailing_string = view.substr(self.trailing_rgn).strip()
         # drop trailing '"""'
-        self.trailing_string = escape(re.sub(r'\s*"""\s*$', '', self.trailing_string))
+        self.trailing_string = jsdocs.escape(re.sub(r'\s*"""\s*$', '', self.trailing_string))
 
         self.parser = parser = get_parser(view)
 
