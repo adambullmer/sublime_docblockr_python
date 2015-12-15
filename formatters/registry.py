@@ -26,7 +26,7 @@ def register(Cls):
 
 def populate_registry():
     """Imports the list of built in parsers and adds them to the registry."""
-    from sublime_docblockr_python.formatters import (
+    from . import (
         base,
         PEP0257,
         docblock,

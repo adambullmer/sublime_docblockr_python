@@ -7,22 +7,12 @@ The main goal of this project is to help developer provide better documentation 
 
 Installation
 ------------
-**Manually**
-Until this project can get onto Package Control, the only way to install it is manually.
-You can add this repo to package control manually and install it that way
-
-1. Open your command pallete and type `Package Control: Add Repository`
-1. Copy and paste the [github url](https://github.com/adambullmer/sublime_docblockr_python) into the input field at the bottom of Sublime Text and press `Enter`
-1. Ensure the status bar says it was successfully added.
-
-
-Now you can install it with package control.
-
+**Package Control**
+Now you can install it with package control!
 1. Open your command pallete and type `Package Control: Install Package`.
-1. Find this project `sublime_docblockr_python` and press `Enter`.
+1. Find this project `DocBlockr Python` and press `Enter`.
 
-
-**Slightly More Manually**
+**Manually**
 Download the release and put it in your installed packages directory yourself
 
 1. Go to the [Latest Release](https://github.com/adambullmer/sublime-docblockr-python/releases/latest) and download the `docblockr_python.sublime-package` file.
@@ -48,7 +38,7 @@ You can also override your user settings on a per project basis by editing your 
 		"formatter": "sphinx"
 	},
 	"folders": [
-	    //...
+	  // ...
 	]
 }
 ```
@@ -69,7 +59,7 @@ If you don't like the formatting styles above, or want to make your own style to
 All you will need to do is extend the [Base formatter](https://github.com/adambullmer/sublime-docblockr-python/blob/master/formatters/base.py#L32) class and write your formatter functions.
 If you're not sure about it, you can take a look at any of the other formatters in the `formatters` source dir and see how they did it.
 ```py
-from sublime_docblockr_python.formatters.base import Base
+from DocBlockr_Python.formatters.base import Base
 
 
 class MyFormatter(Base):

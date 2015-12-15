@@ -2,7 +2,7 @@ import logging
 import sublime
 import importlib
 
-from sublime_docblockr_python.formatters.registry import REGISTRY
+from .registry import REGISTRY
 
 log = logging.getLogger(__name__)
 
@@ -23,7 +23,7 @@ def get_formatter(name):
 
     if formatter is None:
         log.warning('Formatter {} doesn\'t exist. Defaulting to Base formatter.'.format(name))
-        temp = importlib.import_module('sublime_docblockr_python.formatters.base')
+        temp = importlib.import_module('DocBlockr_Python.formatters.base')
         formatter = getattr(temp, 'BaseFormatter')
 
     return formatter
