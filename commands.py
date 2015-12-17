@@ -12,8 +12,8 @@ import sublime
 import sublime_plugin
 import re
 
-from sublime_docblockr_python.formatters.utils import get_formatter, get_setting
-from sublime_docblockr_python.parsers.parser import get_parser
+from .formatters.utils import get_formatter, get_setting
+from .parsers.parser import get_parser
 
 log = logging.getLogger(__name__)
 

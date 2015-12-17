@@ -1,6 +1,6 @@
 import sublime
 
-from sublime_docblockr_python.formatters.registry import populate_registry
+from .formatters.registry import populate_registry
 
 plugin_is_loaded = False
 
