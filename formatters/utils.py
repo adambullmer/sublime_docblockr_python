@@ -1,6 +1,5 @@
 import logging
 import sublime
-import importlib
 
 from .registry import REGISTRY
 
@@ -23,8 +22,8 @@ def get_formatter(name):
 
     if formatter is None:
         log.warning('Formatter {} doesn\'t exist. Defaulting to Base formatter.'.format(name))
-        temp = importlib.import_module('DocBlockr_Python.formatters.base')
-        formatter = getattr(temp, 'BaseFormatter')
+        from . import base
+        formatter = getattr(base, 'BaseFormatter')
 
     return formatter
 
