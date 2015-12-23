@@ -9,6 +9,7 @@ Installation
 ------------
 **Package Control**
 Now you can install it with package control!
+
 1. Open your command pallete and type `Package Control: Install Package`.
 1. Find this project `DocBlockr Python` and press `Enter`.
 
