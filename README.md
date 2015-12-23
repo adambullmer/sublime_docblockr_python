@@ -58,6 +58,7 @@ Extendability
 If you don't like the formatting styles above, or want to make your own style to fit your use case, you can write your own formatter.
 All you will need to do is extend the [Base formatter](https://github.com/adambullmer/sublime-docblockr-python/blob/master/formatters/base.py#L32) class and write your formatter functions.
 If you're not sure about it, you can take a look at any of the other formatters in the `formatters` source dir and see how they did it.
+
 ```py
 from DocBlockr_Python.formatters.base import Base
 
