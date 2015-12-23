@@ -1,1 +1,7 @@
+.tox
+.cache
+.coverage
+flake8.txt
+junit.xml
+
 *.sublime-package
