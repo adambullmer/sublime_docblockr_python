@@ -2,6 +2,7 @@ from abc import abstractmethod, ABCMeta
 
 from .registry import register
 
+
 def counter():
     """Simple Iteratable Counter.
 

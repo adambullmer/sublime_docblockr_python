@@ -88,4 +88,3 @@ class GoogleFormatter(Base):
             )
 
         return section
-

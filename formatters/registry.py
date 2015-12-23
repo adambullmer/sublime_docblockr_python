@@ -5,6 +5,7 @@ Variables:
 """
 REGISTRY = {}
 
+
 def register(Cls):
     """Adds the passed class object to the registry of formatters.
 
@@ -24,6 +25,7 @@ def register(Cls):
     REGISTRY[Cls.name] = Cls
     return Cls
 
+
 def populate_registry():
     """Imports the list of built in parsers and adds them to the registry."""
     from . import (
@@ -34,3 +36,5 @@ def populate_registry():
         sphinx,
         numpy
     )
+
+    return [base, PEP0257, docblock, google, sphinx, numpy]

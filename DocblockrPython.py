@@ -1,5 +1,3 @@
-import sublime
-
 from .formatters.registry import populate_registry
 
 plugin_is_loaded = False
@@ -11,5 +9,3 @@ def plugin_loaded():
 
     global plugin_is_loaded
     plugin_is_loaded = True
-
-    window = sublime.active_window()

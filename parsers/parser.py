@@ -1,7 +1,9 @@
+from collections import namedtuple
 import logging
 import re
 
 log = logging.getLogger(__name__)
+
 
 def get_parser(view):
     """Returns the class of the parser to use.
@@ -194,13 +196,11 @@ class PythonParser:
 
         # Read above the docstring for function/class definition and decorators
         for current_line in read_next_line(view, position, True):
-            # Not an empty line
             current_line_string = view.substr(current_line).strip()
-            if len(current_line_string) is 0:
-                continue
 
-            # Ignore comments
-            if re.match(r'^\s*(\#)', current_line_string):
+            is_not_empty_line = len(current_line_string) > 0
+            is_comment = re.match(r'^\s*(\#)', current_line_string)
+            if is_not_empty_line and not is_comment:
                 continue
 
             # When we move up in scope, stop reading
@@ -210,30 +210,27 @@ class PythonParser:
 
             # Set to module, class, or function
             if docstring_type is None:
+                docstring_type = 'module'
+
                 if re.match(r'^\s*(class )', current_line_string):
                     docstring_type = 'class'
                 elif re.match(r'^\s*(def )', current_line_string):
                     docstring_type = 'function'
-                else:
-                    docstring_type = 'module'
 
             definition = current_line_string + '\n' + definition
 
         # Read the class/function contents
         for current_line in read_next_line(view, position):
-            # Not an empty line
-            current_line_string = view.substr(current_line).rstrip()
-            if len(current_line_string) is 0:
-                continue
+            current_line_string = view.substr(current_line).strip()
 
-            # Remove comments
-            if re.match(r'^\s*(\#)', current_line_string):
-                continue
+            is_not_empty_line = len(current_line_string) > 0
+            is_comment = re.match(r'^\s*(\#)', current_line_string)
+            current_indentation = view.indentation_level(current_line.end())
 
             # If this is a module or a class, we only care about the lines on
             # the same indentation level for contextual reasons
-            current_indentation = view.indentation_level(current_line.end())
-            if not docstring_type == 'function' and not current_indentation == indentation_level:
+            is_out_of_context = not docstring_type == 'function' and not current_indentation == indentation_level
+            if is_not_empty_line and not is_comment and not is_out_of_context:
                 continue
 
             # Still within the same indentation level
@@ -320,7 +317,7 @@ class PythonParser:
         """
 
         if line is not None:
-            return None;
+            return None
 
         parsed_module = []
         variables = self.parse_variables(contents)
@@ -583,34 +580,25 @@ class PythonParser:
         if value is None:
             return None
 
-        first_char = value[0]
-
         if is_numeric(value):
             return "number"
 
-        if first_char in ['\"', '\'']:
-            return "str"
+        test_case = namedtuple('test_case', ['condition', 'type'])
+        tests = [
+            test_case(('\"', '\''), 'str'),
+            test_case('[', 'list'),
+            test_case('{', 'dict'),
+            test_case('(', 'tuple'),
+            test_case(('True', 'False'), 'bool'),
+            test_case(("r'", 'r"', "R'", 'R"'), 'regexp'),
+            test_case(("u'", 'u"', "U'", 'U"'), 'unicode'),
+            test_case(("b'", 'b"', "B'", 'B"'), 'unicode'),
+            test_case('lambda ', 'function'),
+        ]
 
-        if first_char == '[':
-            return "list"
-
-        if first_char == '{':
-            return "dict"
-
-        if first_char == '(':
-            return "tuple"
-
-        if value in ['True', 'False']:
-            return 'bool'
-
-        if value[:2] in ["r'", 'r"', "R'", 'R"']:
-            return 'regexp'
-
-        if value[:2] in ["u'", 'u"', "U'", 'U"']:
-            return 'unicode'
-
-        if value[:7] == 'lambda ':
-            return 'function'
+        for test in tests:
+            if value.startswith(test.condition) is True:
+                return test.type
 
         return None
 
