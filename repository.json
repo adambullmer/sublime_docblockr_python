@@ -2,7 +2,7 @@
 	"schema_version": "3.0.0",
 	"dependencies": [],
 	"packages": [{
-		"name": "DocBlockr_Python",
+		"name": "DocBlockr Python",
 		"details": "https://github.com/adambullmer/sublime_docblockr_python",
 		"readme": "https://raw.githubusercontent.com/adambullmer/sublime_docblockr_python/master/README.md",
 		"issues": "https://github.com/adambullmer/sublime_docblockr_python/issues",
