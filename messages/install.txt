@@ -1,0 +1,27 @@
+DocBlockr Python
+================
+
+To get started:
+
+1. Open a python file (syntax must be currently set to python)
+2. Open a double quoted docstring (""") at one of the following places:
+  - Top of the file
+  - Beginning of a class
+  - Beginning of a function
+3. Press [enter] to trigger the autocomplete
+
+If you don't want to trigger the parser on a docstring, simply hold down [ctrl]/[cmd] and press [enter]
+
+For configuration and extendability, see the readme
+https://github.com/adambullmer/sublime_docblockr_python
+
+Examples
+--------
+
+1.
+class TestClass():
+    """<-- Press [enter]
+
+2.
+def test_function():
+    """<-- Press [enter]
