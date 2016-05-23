@@ -1,4 +1,5 @@
 [
+  // Module Docstrings
   {
     "keys": [
       "enter"
@@ -36,6 +37,47 @@
       { "key": "selection_empty",       "operator": "equal",          "operand": true,                         "match_all": true },
       { "key": "auto_complete_visible", "operator": "equal",          "operand": false,                        "match_all": true },
       { "key": "preceding_text",        "operator": "regex_contains", "operand": "^\\s*(\"\"\")\\s*$",         "match_all": true }
+    ]
+  },
+
+  // NEW function docstrings
+  {
+    "keys": [
+      "enter"
+    ],
+    "command": "docblockr_python",
+    "context": [
+      { "key": "selector",              "operator": "equal",          "operand": "comment.block.python", "match_all": false },
+      { "key": "setting.auto_indent",   "operator": "equal",          "operand": true,                   "match_all": true },
+      { "key": "selection_empty",       "operator": "equal",          "operand": true,                   "match_all": true },
+      { "key": "auto_complete_visible", "operator": "equal",          "operand": false,                  "match_all": true },
+      { "key": "preceding_text",        "operator": "regex_contains", "operand": "^\\s*(\"\"\")\\s*$",   "match_all": true }
+    ]
+  },
+  {
+    "keys": [
+      "keypad_enter"
+    ],
+    "command": "docblockr_python",
+    "context": [
+      { "key": "selector",              "operator": "equal",          "operand": "comment.block.python", "match_all": false },
+      { "key": "setting.auto_indent",   "operator": "equal",          "operand": true,                   "match_all": true },
+      { "key": "selection_empty",       "operator": "equal",          "operand": true,                   "match_all": true },
+      { "key": "auto_complete_visible", "operator": "equal",          "operand": false,                  "match_all": true },
+      { "key": "preceding_text",        "operator": "regex_contains", "operand": "^\\s*(\"\"\")\\s*$",   "match_all": true }
+    ]
+  },
+  {
+    "keys": [
+      "tab"
+    ],
+    "command": "docblockr_python",
+    "context": [
+      { "key": "selector",              "operator": "equal",          "operand": "comment.block.python", "match_all": false },
+      { "key": "setting.auto_indent",   "operator": "equal",          "operand": true,                   "match_all": true },
+      { "key": "selection_empty",       "operator": "equal",          "operand": true,                   "match_all": true },
+      { "key": "auto_complete_visible", "operator": "equal",          "operand": false,                  "match_all": true },
+      { "key": "preceding_text",        "operator": "regex_contains", "operand": "^\\s*(\"\"\")\\s*$",   "match_all": true }
     ]
   }
 ]
