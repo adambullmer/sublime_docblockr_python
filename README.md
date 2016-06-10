@@ -49,7 +49,7 @@ Supported Docstring Styles
 --------------------------
 - Docblockr (PEP0257 with types)
 - [PEP0257](https://www.python.org/dev/peps/pep-0257/)
-- [Google](https://google-styleguide.googlecode.com/svn/trunk/pyguide.html#Comments)
+- [Google](https://google.github.io/styleguide/pyguide.html#Comments)
 - [Numpy](https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt)
 - [Sphinx (reST)](https://pythonhosted.org/an_example_pypi_project/sphinx.html)
 
