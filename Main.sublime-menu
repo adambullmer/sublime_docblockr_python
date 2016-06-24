@@ -15,7 +15,7 @@
                                 "caption": "Settings – Default",
                                 "command": "open_file", "args":
                                 {
-                                    "file": "${packages}/docblockr_python/DocblockrPython.sublime-settings"
+                                    "file": "${packages}/DocBlockr_Python/DocblockrPython.sublime-settings"
                                 }
                             },
                             {
