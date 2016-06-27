@@ -27,10 +27,14 @@ There isn't a command pallete command to start this plugin, it is triggerg by hi
 If you wanted to simply put a new line after opening a docstring and not trigger the formatter, just hold `ctrl` and press enter.
 
 
-Settings
---------
+Default and User Settings
+-------------------------
 You can configure which docstring format to use by updating your user settings for this package. (`Preferences > Package Settings > DocBlockr Python > Settings (User)`)
 For a full list of settings with documentation on what they affect, look at the `Settings (Default)` file.
+
+
+Project Settings
+----------------
 You can also override your user settings on a per project basis by editing your project file. Any setting will be available for overriding here.
 
 ```json
