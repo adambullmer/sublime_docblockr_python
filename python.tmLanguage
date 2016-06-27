@@ -2249,7 +2249,7 @@
 								</dict>
 							</dict>
 							<key>end</key>
-							<string>(^\s*$|(?="""))</string>
+							<string>(^\s*$|\s*(?="""))</string>
 							<key>patterns</key>
 							<array>
 								<dict>
@@ -2288,7 +2288,7 @@
 								</dict>
 							</dict>
 							<key>end</key>
-							<string>(^\s*$|(?="""))</string>
+							<string>(^\s*$|\s*(?="""))</string>
 							<key>patterns</key>
 							<array>
 								<dict>
@@ -2327,7 +2327,7 @@
 								</dict>
 							</dict>
 							<key>end</key>
-							<string>(^\s*$|(?="""))</string>
+							<string>(^\s*$|\s*(?="""))</string>
 						</dict>
 						<dict>
 							<key>begin</key>
@@ -2341,7 +2341,7 @@
 								</dict>
 							</dict>
 							<key>end</key>
-							<string>(^\s*$|(?="""))</string>
+							<string>(^\s*$|\s*(?="""))</string>
 							<key>patterns</key>
 							<array>
 								<dict>
@@ -2370,7 +2370,7 @@
 								</dict>
 							</dict>
 							<key>end</key>
-							<string>(^\s*$|(?="""))</string>
+							<string>(^\s*$|\s*(?="""))</string>
 							<key>patterns</key>
 							<array>
 								<dict>

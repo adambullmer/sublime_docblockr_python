@@ -1293,7 +1293,7 @@
                             "beginCaptures": {
                                 "0": { "name": "variable.parameter.function.python" }
                             },
-                            "end": "(^\\s*$|(?=\"\"\"))",
+                            "end": "(^\\s*$|\\s*(?=\"\"\"))",
                             "patterns": [
                                 {
                                     "match": "^\\s*(\\w*)\\s*\\{([^\\{\\}]*)\\}\\s*--\\s*(.*)$",
@@ -1310,7 +1310,7 @@
                             "beginCaptures": {
                                 "0": { "name": "constant.numeric.integer.decimal.python" }
                             },
-                            "end": "(^\\s*$|(?=\"\"\"))",
+                            "end": "(^\\s*$|\\s*(?=\"\"\"))",
                             "patterns": [
                                 {
                                     "match": "^\\s*(\\w*)\\s*\\{([^\\{\\}]*)\\}(\\s*--)?\\s*(.*)?$",
@@ -1327,14 +1327,14 @@
                             "beginCaptures": {
                                 "0": { "name": "support.function.magic.python" }
                             },
-                            "end": "(^\\s*$|(?=\"\"\"))"
+                            "end": "(^\\s*$|\\s*(?=\"\"\"))"
                         },
                         {
                             "begin": "^\\s*([Ee]xtends|[Dd]ecorators)(:)?\\s*$",
                             "beginCaptures": {
                                 "0": { "name": "entity.name.function.decorator.python" }
                             },
-                            "end": "(^\\s*$|(?=\"\"\"))",
+                            "end": "(^\\s*$|\\s*(?=\"\"\"))",
                             "patterns": [
                                 {
                                     "match": "^(.*)$",
@@ -1349,7 +1349,7 @@
                             "beginCaptures": {
                                 "0": { "name": "keyword.other.python" }
                             },
-                            "end": "(^\\s*$|(?=\"\"\"))",
+                            "end": "(^\\s*$|\\s*(?=\"\"\"))",
                             "patterns": [
                                 {
                                     "match": "^\\s*\\{([^\\{\\}]*)\\}",
