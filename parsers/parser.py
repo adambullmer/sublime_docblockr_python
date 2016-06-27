@@ -3,6 +3,7 @@ import re
 
 log = logging.getLogger(__name__)
 
+
 def get_parser(view):
     """Returns the class of the parser to use.
 
@@ -162,11 +163,26 @@ class PythonParser:
         Returns:
             {String} Representation of the definition line
         """
+        # reset the position to the beginning of the line
+        position = view.line(position).begin()
+
         # At beginning of the module
-        if position is 0:
+        if position == 0:
             return None
 
-        return view.substr(view.line(view.line(position - 1)))
+        indentation_level = view.indentation_level(position)
+        line = ''
+
+        for current_line in read_next_line(view, position, True):
+            current_line_string = view.substr(current_line).strip()
+            line = current_line_string + ' ' + line
+
+            # When we move up in scope, stop reading
+            current_indentation = view.indentation_level(current_line.end())
+            if current_indentation < indentation_level:
+                break
+
+        return line
 
     @classmethod
     def get_definition_contents(cls, view, position):

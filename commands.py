@@ -125,7 +125,7 @@ class DocblockrPythonCommand(sublime_plugin.TextCommand):
         self.parser = parser = get_parser(view)
 
         # read the previous line
-        self.line = parser.get_definition(view, view.line(position).begin() - 1)
+        self.line = parser.get_definition(view, position)
         self.contents = parser.get_definition_contents(view, view.line(position).end())
         log.debug('contents -- {}'.format(self.contents))
 
