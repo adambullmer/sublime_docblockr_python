@@ -1,3 +1,11 @@
+"""DocBlockr for Python.
+
+Author: Adam Bullmer <psycodrumfreak@gmail.com>
+Website: https://github.com/adambullmer/sublime-docblockr-python
+
+Credit to `spadgos` and the team at DocBlockr for providing some source code
+to support this project
+"""
 import sublime
 
 from .formatters.registry import populate_registry
@@ -12,4 +20,4 @@ def plugin_loaded():
     global plugin_is_loaded
     plugin_is_loaded = True
 
-    window = sublime.active_window()
+    sublime.active_window()

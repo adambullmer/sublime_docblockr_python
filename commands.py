@@ -1,5 +1,4 @@
-"""
-DocBlockr Python v1.3.0
+"""DocBlockr for Python.
 
 Author: Adam Bullmer <adam.bullmer@gmail.com>
 Website: https://github.com/adambullmer/sublime-docblockr-python
@@ -8,9 +7,10 @@ Credit to `spadgos` and the team at DocBlockr for providing some source code
 to support this project
 """
 import logging
+import re
+
 import sublime
 import sublime_plugin
-import re
 
 from .formatters.utils import get_formatter, get_setting
 from .parsers.parser import get_parser
@@ -19,7 +19,7 @@ log = logging.getLogger(__name__)
 
 
 def write(view, string):
-    """Writes a string to the view as a snippet.
+    """Write a string to the view as a snippet.
 
     Arguments:
         view   {sublime.View} -- view to have content written to
@@ -30,7 +30,7 @@ def write(view, string):
 
 
 def escape(string):
-    """Escapes the special characters.
+    r"""Escape the special characters.
 
     Escapes characters that are also in snippet tab fields so that inserting into the view
     doesn't accidentally create another tabbable field
@@ -65,6 +65,7 @@ class DocblockrPythonCommand(sublime_plugin.TextCommand):
         line            {String}
         contents        {String}
     """
+
     position = 0
     trailing_rgn = ''
     trailing_string = ''
@@ -77,7 +78,7 @@ class DocblockrPythonCommand(sublime_plugin.TextCommand):
     project_settings = None
 
     def run(self, edit):
-        """Sublime Command Entrypoint
+        """Sublime Command Entrypoint.
 
         Entrypoint for the Sublime Text Command. Outputs the result of the parsing to
         the view.
@@ -130,6 +131,17 @@ class DocblockrPythonCommand(sublime_plugin.TextCommand):
         log.debug('contents -- {}'.format(self.contents))
 
     def create_snippet(self, parsed_attributes):
+        """Format a Sublime Text snippet syntax string.
+
+        Iterates through the list of field groups, and then through each item
+        in the group to create the snippets using the user specified formatter.
+
+        Arguments:
+            parsed_attributes {dict} -- key value of attributes groups
+
+        Returns:
+            str -- sublime text formatted snippet string
+        """
         project_formatter = self.project_settings.get('formatter', None)
         formatter = get_formatter(project_formatter or get_setting('formatter'))()
 

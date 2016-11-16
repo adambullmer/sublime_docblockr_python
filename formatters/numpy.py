@@ -1,16 +1,22 @@
+"""Default Formatter for Numpy."""
 from .base import Base
 
 
 class NumpyFormatter(Base):
+    """Documentation Formatter Class."""
+
     name = 'numpy'
 
     def decorators(self, attributes):
+        """Create snippet string for a list of decorators."""
         return ''
 
     def extends(self, attributes):
+        """Create snippet string for a list of extended objects."""
         return ''
 
     def arguments(self, attributes):
+        """Create snippet string for a list of arguments."""
         section = '\nParameters\n----------\n'
         template = '{name} : {{{type}}}\n\t{description}\n'
 
@@ -29,6 +35,7 @@ class NumpyFormatter(Base):
         return section
 
     def keyword_arguments(self, attributes):
+        """Create snippet string for a list of keyword arguments."""
         section = ''
         template = '{name} : {{{type}}}, optional\n\t{description} '\
                    '(the default is {default}, which {default_description})\n'
@@ -48,6 +55,7 @@ class NumpyFormatter(Base):
         return section
 
     def returns(self, attribute):
+        """Create snippet string for a list of return values."""
         section = '\nReturns\n-------\n'
         template = '{type}\n\t{description}\n'
 
@@ -59,6 +67,7 @@ class NumpyFormatter(Base):
         return section
 
     def yields(self, attribute):
+        """Create snippet string for a list of yielded results."""
         section = '\nYields\n------\n'
         template = '{type}\n\t{description}\n'
 
@@ -70,6 +79,7 @@ class NumpyFormatter(Base):
         return section
 
     def raises(self, attributes):
+        """Create snippet string for a list of raiased exceptions."""
         section = '\nRaises\n------\n'
         template = '{name}\n\t{description}\n'
 
@@ -82,6 +92,7 @@ class NumpyFormatter(Base):
         return section
 
     def variables(self, attributes):
+        """Create snippet string for a list of variables."""
         section = '\nAttributes\n----------\n'
         template = '{name} : {{{type}}}\n\t{description}\n'
 
