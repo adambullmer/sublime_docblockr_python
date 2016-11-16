@@ -1,3 +1,4 @@
+"""Parsing Class for python files."""
 import logging
 import re
 
@@ -5,7 +6,7 @@ log = logging.getLogger(__name__)
 
 
 def get_parser(view):
-    """Returns the class of the parser to use.
+    """Return the class of the parser to use.
 
     Arguments:
         view {sublime.View} -- The sublime text view in which this is executing in
@@ -25,7 +26,7 @@ def get_parser(view):
 
 
 def split_by_commas(string):
-    """Splits a string by unenclosed commas.
+    """Split a string by unenclosed commas.
 
     Splits a string by commas that are not inside of:
     - quotes
@@ -87,7 +88,7 @@ def split_by_commas(string):
 
 
 def read_next_line(view, position, reverse=False):
-    """Gets the next line of the view.
+    """Get the next line of the view.
 
     From the given position, will expand the region to the current line in the file,
     grab the ending (beginning if reverse) position, and add (subtract if reverse) 1
@@ -126,11 +127,80 @@ def read_next_line(view, position, reverse=False):
 
 
 def is_numeric(val):
+    """Check if string is numeric.
+
+    Arguments:
+        val {str} -- potentially stringified number
+
+    Returns:
+        bool -- if the passed value is numeric
+    """
     try:
         float(val)
         return True
     except ValueError:
         return False
+
+
+def guess_type_from_name(name):
+    """Make an educated guess about the type of a variable based on common naming conventions.
+
+    Arguments:
+        name {str} -- variable name
+
+    Returns:
+        {str} -- string of the builtin type or None if one cannot be found
+    """
+    if re.match("(?:is|has)[A-Z_]", name):
+        return 'bool'
+
+    if re.match("^(?:cb|callback|done|next|fn)$", name):
+        return 'function'
+
+    return None
+
+
+def guess_type_from_value(value):
+    """Make educated assertion about the type of the value.
+
+    Arguments:
+        value {str} -- string representation of a value
+
+    Returns:
+        {str} -- string of the builtin type or None if one cannot be found
+    """
+    if value is None:
+        return None
+
+    first_char = value[0]
+
+    if is_numeric(value):
+        return "number"
+
+    char_map = {
+        '\"': "str",
+        '\'': "str",
+        '[': "list",
+        '{': "dict",
+        '(': "tuple",
+    }
+
+    if char_map.get(first_char) is not None:
+        return char_map.get(first_char)
+
+    if value in ['True', 'False']:
+        return 'bool'
+
+    if value[:2] in ["r'", 'r"', "R'", 'R"']:
+        return 'regexp'
+
+    if value[:2] in ["u'", 'u"', "U'", 'U"']:
+        return 'unicode'
+
+    if value[:7] == 'lambda ':
+        return 'function'
+
+    return None
 
 
 class PythonParser:
@@ -142,14 +212,16 @@ class PythonParser:
     Variables:
         closing_string {String}
     """
+
     closing_string = '"""'
 
     def __init__(self, view_settings=None):
+        """---."""
         self.view_settings = view_settings
 
     @classmethod
     def get_definition(self, view, position):
-        """Gets the definition line.
+        """Get the definition line.
 
         String representation fo the line above the docstring
 
@@ -185,30 +257,23 @@ class PythonParser:
         return line
 
     @classmethod
-    def get_definition_contents(cls, view, position):
-        """Gets the relevant contents of the module/class/function.
+    def read_above(cls, view, position):
+        """Read the contents above the current definition line.
 
-        For Modules and Classes, will only provide the lines on the same
-        indentation level as the docstring, so that the interpreter is only looking
-        at what is possibly relevant. For functions, the whole content of the function
-        if returned, since we will be looking for return/yield values, we cannot be
-        certain won which indentation that will be made, if at all.
+        Gathers additional context about the lines above a definition line,
+        e.g. Decorators.
 
         Arguments:
             view {sublime.View} -- The sublime view in which this is executing
-            position {Integer} -- Position the docstring was created on
-
-        Decorators:
-            classmethod
+            position {Integer} -- Position of the docstring
 
         Returns:
-            {String} Contents that matter
+            string, string -- type of definition, stringified definition contents
         """
         indentation_level = view.indentation_level(position)
-        definition = ''
         docstring_type = None
+        definition = ''
 
-        # Read above the docstring for function/class definition and decorators
         for current_line in read_next_line(view, position, True):
             # Not an empty line
             current_line_string = view.substr(current_line).strip()
@@ -234,6 +299,34 @@ class PythonParser:
                     docstring_type = 'module'
 
             definition = current_line_string + '\n' + definition
+
+        return docstring_type, definition
+
+    @classmethod
+    def get_definition_contents(cls, view, position):
+        """Get the relevant contents of the module/class/function.
+
+        For Modules and Classes, will only provide the lines on the same
+        indentation level as the docstring, so that the interpreter is only looking
+        at what is possibly relevant. For functions, the whole content of the function
+        if returned, since we will be looking for return/yield values, we cannot be
+        certain won which indentation that will be made, if at all.
+
+        Arguments:
+            view {sublime.View} -- The sublime view in which this is executing
+            position {Integer} -- Position the docstring was created on
+
+        Decorators:
+            classmethod
+
+        Returns:
+            {String} Contents that matter
+        """
+        indentation_level = view.indentation_level(position)
+        definition = ''
+
+        docstring_type, definition = cls.read_above(view, position)
+        # Read above the docstring for function/class definition and decorators
 
         # Read the class/function contents
         for current_line in read_next_line(view, position):
@@ -290,6 +383,17 @@ class PythonParser:
         return {}
 
     def process_variable(self, variable):
+        """Process an individual variable.
+
+        Determines programmatically what the assumed type of the variable is,
+        based on the initial assignment, or common naming conventions of the variable
+
+        Arguments:
+            variable {String} -- varibale definition line
+
+        Returns:
+            {Dictionary} -- Dictionary of attributes to create snippets from
+        """
         params = {
             'name': None,
             'type': None,
@@ -302,11 +406,19 @@ class PythonParser:
             params['default'] = pieces[1].strip()
 
         params['name'] = variable
-        params['type'] = self.guess_type_from_value(params['default']) or self.guess_type_from_name(variable)
+        params['type'] = guess_type_from_value(params['default']) or guess_type_from_name(variable)
 
         return params
 
     def parse_variables(self, contents):
+        """Parse module level variables.
+
+        Arguments:
+            contents {String} -- Module Body
+
+        Returns:
+            {Dictionary} -- Dictionary of attributes to create snippets from
+        """
         variables = []
         contents + '\n'
         regex = re.compile(r'^\s*((?:(?!from |import |def |class |@).)+$)', re.MULTILINE)
@@ -322,7 +434,7 @@ class PythonParser:
         return variables
 
     def process_module(self, line, contents):
-        """Parses the whole module file to find module level variables.
+        """Parse the whole module file to find module level variables.
 
         Reads the lines in the module contents to get the names of the module level variables.
         Arguments:
@@ -334,9 +446,8 @@ class PythonParser:
         Returns:
             {Dictionary} Dictionary of attributes to create snippets from
         """
-
         if line is not None:
-            return None;
+            return None
 
         parsed_module = []
         variables = self.parse_variables(contents)
@@ -347,6 +458,14 @@ class PythonParser:
         return parsed_module
 
     def parse_extends(self, line):
+        """Parse a class line to determine the extended classes.
+
+        Arguments:
+            line {string} -- Line containing the class definition
+
+        Returns:
+            {Dictionary} -- Dictionary of attributes to create snippets from
+        """
         extends = re.search(r'^\s*class \w*\((.*)\):\s*$', line)
 
         if not extends:
@@ -363,7 +482,7 @@ class PythonParser:
         return parsed_extends
 
     def process_class(self, line, contents):
-        """Parses a class line to determine its attributes.
+        """Parse a class line to determine its attributes.
 
         Reads the class line to determine what other classes it extends
         Arguments:
@@ -392,7 +511,7 @@ class PythonParser:
         return parsed_class
 
     def parse_decorators(self, definition, content):
-        """Parses the lines above the definition for decorators.
+        """Parse the lines above the definition for decorators.
 
         Finds and returns all the decorators over a function that aren't
         in the excluded list.
@@ -426,7 +545,7 @@ class PythonParser:
         return decorators
 
     def parse_arguments(self, line):
-        """Finds and parses each argument and keyword argument.
+        """Find and parses each argument and keyword argument.
 
         Arguments:
             line {str} -- definition line to be parsed
@@ -459,7 +578,7 @@ class PythonParser:
         return parsed_arguments
 
     def parse_returns(self, contents):
-        """Finds the first instances of returning in the definition.
+        """Find the first instances of returning in the definition.
 
         Parses through the whole definition for occurrances of the keyword `return`,
         or `yield` and returns the first. Tries guess the type of the value.
@@ -478,12 +597,12 @@ class PythonParser:
 
         match = match[0]
         return_type = match[0] + 's'
-        return_value_type = self.guess_type_from_value(match[1])
+        return_value_type = guess_type_from_value(match[1])
 
         return (return_type, {'type': return_value_type})
 
     def parse_raises(self, contents):
-        """Finds instances of raised exceptions in the definition.
+        """Find instances of raised exceptions in the definition.
 
         Parses through the whole definition for occurrances of the keyword `raise`,
         and appends the following value to the list of exceptions to be returned.
@@ -507,7 +626,7 @@ class PythonParser:
         return raises
 
     def process_function(self, line, contents):
-        """Parses a function for its arguments
+        """Parse a function for its arguments.
 
         Reads the function line to parse out the args and kwargs.
         Arguments:
@@ -544,7 +663,7 @@ class PythonParser:
         return parsed_function
 
     def is_docstring_closed(self, view, position):
-        """Checks if the current docstring is supposed to be closed.
+        """Check if the current docstring is supposed to be closed.
 
         Keep reading lines until we reach the end of the file, class, or function
         We will assume that if the indentation level is ever lower than present, and no
@@ -586,63 +705,3 @@ class PythonParser:
                 return True
 
         return False
-
-    def guess_type_from_value(self, value):
-        """Make educated assertion about the type of the value.
-
-        Arguments:
-            value {str} -- string representation of a value
-
-        Returns:
-            {str} -- string of the builtin type or None if one cannot be found
-        """
-        if value is None:
-            return None
-
-        first_char = value[0]
-
-        if is_numeric(value):
-            return "number"
-
-        if first_char in ['\"', '\'']:
-            return "str"
-
-        if first_char == '[':
-            return "list"
-
-        if first_char == '{':
-            return "dict"
-
-        if first_char == '(':
-            return "tuple"
-
-        if value in ['True', 'False']:
-            return 'bool'
-
-        if value[:2] in ["r'", 'r"', "R'", 'R"']:
-            return 'regexp'
-
-        if value[:2] in ["u'", 'u"', "U'", 'U"']:
-            return 'unicode'
-
-        if value[:7] == 'lambda ':
-            return 'function'
-
-        return None
-
-    def guess_type_from_name(self, name):
-        """Make an educated guess about the type of a variable based on common naming conventions.
-
-        Arguments:
-            name {str} -- variable name
-
-        Returns:
-            {str} -- string of the builtin type or None ifone cannot be found
-        """
-        if re.match("(?:is|has)[A-Z_]", name):
-            return 'bool'
-
-        if re.match("^(?:cb|callback|done|next|fn)$", name):
-            return 'function'
-
-        return None

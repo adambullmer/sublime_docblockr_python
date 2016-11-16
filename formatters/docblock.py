@@ -1,10 +1,14 @@
+"""Default Formatter for DocBlock."""
 from .base import Base
 
 
 class DocblockFormatter(Base):
+    """Documentation Formatter Class."""
+
     name = 'docblock'
 
     def decorators(self, attributes):
+        """Create snippet string for a list of decorators."""
         section = '\nDecorators:\n'
         template = '\t{}\n'
 
@@ -14,6 +18,7 @@ class DocblockFormatter(Base):
         return section
 
     def extends(self, attributes):
+        """Create snippet string for a list of extended objects."""
         section = '\nExtends:\n'
         template = '\t{}\n'
 
@@ -23,6 +28,7 @@ class DocblockFormatter(Base):
         return section
 
     def arguments(self, attributes):
+        """Create snippet string for a list of arguments."""
         section = '\nArguments:\n'
         template = '\t{name} {{{type}}} -- {description}\n'
 
@@ -41,6 +47,7 @@ class DocblockFormatter(Base):
         return section
 
     def keyword_arguments(self, attributes):
+        """Create snippet string for a list of keyword arguments."""
         section = '\nKeyword Arguments:\n'
         template = '\t{name} {{{type}}} -- {description} (default: {{{default}}})\n'
 
@@ -58,6 +65,7 @@ class DocblockFormatter(Base):
         return section
 
     def returns(self, attribute):
+        """Create snippet string for a list of return values."""
         section = '\nReturns:\n'
         template = '\t{type} -- {description}\n'
 
@@ -69,6 +77,7 @@ class DocblockFormatter(Base):
         return section
 
     def yields(self, attribute):
+        """Create snippet string for a list of yielded results."""
         section = '\nYields:\n'
         template = '\t{type} -- {description}\n'
 
@@ -80,6 +89,7 @@ class DocblockFormatter(Base):
         return section
 
     def raises(self, attributes):
+        """Create snippet string for a list of raiased exceptions."""
         section = '\nRaises:\n'
         template = '\t{name} -- {description}\n'
 
@@ -92,6 +102,7 @@ class DocblockFormatter(Base):
         return section
 
     def variables(self, attributes):
+        """Create snippet string for a list of variables."""
         section = '\nVariables:\n'
         template = '\t{name} {{{type}}} -- {description}\n'
 

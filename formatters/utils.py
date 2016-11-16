@@ -1,3 +1,4 @@
+"""Common Utilities for the default formatters."""
 import logging
 import sublime
 
@@ -7,7 +8,7 @@ log = logging.getLogger(__name__)
 
 
 def get_formatter(name):
-    """Returns the requested formatter by name from the registry.
+    """Return the requested formatter by name from the registry.
 
     Attempts to get the requested formatter from the registry. If it doesn't
     exist, the base formatter BaseFormatter will be used instead.
@@ -29,7 +30,7 @@ def get_formatter(name):
 
 
 def get_setting(key, default=None):
-    """Gets the passed setting from the aggregated settings files.
+    """Get the passed setting from the aggregated settings files.
 
     Merges up settings as specified in Sublime's docs.
     https://www.sublimetext.com/docs/3/settings.html
