@@ -121,7 +121,7 @@ class DocblockrPythonCommand(sublime_plugin.TextCommand):
         self.trailing_rgn = sublime.Region(position, view.line(position).end())
         self.trailing_string = view.substr(self.trailing_rgn).strip()
         # drop trailing '"""'
-        self.trailing_string = escape(re.sub(r'\s*"""\s*$', '', self.trailing_string))
+        self.trailing_string = escape(re.sub(r'\s*("""|\'\'\')\s*$', '', self.trailing_string))
 
         self.parser = parser = get_parser(view)
 
