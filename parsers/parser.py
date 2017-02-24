@@ -676,7 +676,6 @@ class PythonParser:
             if match is not None:
                 s = match.group(0).strip()[0:3]
                 if s in ['"""', "'''"]:
-                    print('setting closing string to {}'.format(s))
                     self.closing_string = s
                 else:
                     raise Exception('could not find closing string.  Match was: {}'.format(match))
