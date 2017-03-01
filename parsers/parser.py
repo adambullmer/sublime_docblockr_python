@@ -208,16 +208,12 @@ class PythonParser:
 
     Contains the relevant parsing configuration to be able to handle Python style
     source files.
-
-    Variables:
-        closing_string {String}
     """
-
-    closing_string = '"""'
 
     def __init__(self, view_settings=None):
         """---."""
         self.view_settings = view_settings
+        self.closing_string = '"""'
 
     @classmethod
     def get_definition(self, view, position):
@@ -676,13 +672,22 @@ class PythonParser:
         Returns:
             {Bool} True if the docstring is confirmed closed
         """
+        def set_closing_string(match):
+            if match is not None:
+                s = match.group(0).strip()[0:3]
+                if s in ['"""', "'''"]:
+                    self.closing_string = s
+                else:
+                    raise Exception('could not find closing string.  Match was: {}'.format(match))
+
         indentation_level = view.indentation_level(position)
 
         # Check the current line first, and ignore if docstring is closed on this line
         line = view.substr(view.line(position))
-        match = re.search(r'^\s*""".*"""\s*$', line)
+        match = re.search(r'^\s*(""".*"""|\'\'\'.*\'\'\')\s*$', line)
 
         if match is not None:
+            set_closing_string(match)
             return False
 
         for current_line in read_next_line(view, position):
@@ -701,7 +706,10 @@ class PythonParser:
                 break
 
             # Line only contains whitespace and """
-            if re.search(r'^\s*"""', current_line_string) is not None:
+            match = re.search(r'^\s*("""|\'\'\')', current_line_string)
+            if match is not None:
+                set_closing_string(match)
                 return True
 
+        set_closing_string(re.search(r'^\s*("""|\'\'\')', line))
         return False
