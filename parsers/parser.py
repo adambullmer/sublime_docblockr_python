@@ -563,8 +563,8 @@ class PythonParser:
         excluded_parameters = ['self', 'cls']
         arguments = split_by_commas(arguments.group(1))
 
-        for argument in arguments:
-            if argument in excluded_parameters:
+        for index, argument in enumerate(arguments):
+            if index == 0 and argument in excluded_parameters:
                 continue
 
             argument_type = 'keyword_arguments' if '=' in argument else 'arguments'
