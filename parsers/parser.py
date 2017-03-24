@@ -169,10 +169,10 @@ def guess_type_from_value(value):
     Returns:
         {str} -- string of the builtin type or None if one cannot be found
     """
-    if value is None:
+    if value is None or not isinstance(value, str):
         return None
 
-    first_char = value[0]
+    first_char = value[0:1]
 
     if is_numeric(value):
         return "number"
@@ -402,7 +402,7 @@ class PythonParser:
             params['default'] = pieces[1].strip()
 
         params['name'] = variable
-        params['type'] = guess_type_from_value(params['default']) or guess_type_from_name(variable)
+        params['type'] = guess_type_from_value(params.get('default')) or guess_type_from_name(variable)
 
         return params
 
