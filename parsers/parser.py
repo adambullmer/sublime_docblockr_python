@@ -285,6 +285,10 @@ class PythonParser:
             if not current_indentation == indentation_level - 1:
                 break
 
+            # Keeping it simple, will not parse multiline decorators
+            if docstring_type is not None and not re.match(r'^\s*(\@)', current_line_string):
+                break
+
             # Set to module, class, or function
             if docstring_type is None:
                 if re.match(r'^\s*(class )', current_line_string):
@@ -328,22 +332,23 @@ class PythonParser:
         for current_line in read_next_line(view, position):
             # Not an empty line
             current_line_string = view.substr(current_line).rstrip()
-            if len(current_line_string) is 0:
+            if len(current_line_string) == 0:
                 continue
 
             # Remove comments
             if re.match(r'^\s*(\#)', current_line_string):
                 continue
 
-            # If this is a module or a class, we only care about the lines on
-            # the same indentation level for contextual reasons
             current_indentation = view.indentation_level(current_line.end())
-            if not docstring_type == 'function' and not current_indentation == indentation_level:
-                continue
 
-            # Still within the same indentation level
+            # Exit if this has de-indented below the current level
             if current_indentation < indentation_level:
                 break
+
+            # If this is a module or a class, we only care about the lines on
+            # the same indentation level for contextual reasons
+            if not docstring_type == 'function' and not current_indentation == indentation_level:
+                continue
 
             definition += current_line_string + '\n'
 
