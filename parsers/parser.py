@@ -383,7 +383,7 @@ class PythonParser:
 
         return {}
 
-    def process_variable(self, variable):
+    def process_variable(self, variable, hints={}):
         """Process an individual variable.
 
         Determines programmatically what the assumed type of the variable is,
@@ -407,7 +407,7 @@ class PythonParser:
             params['default'] = pieces[1].strip()
 
         params['name'] = variable
-        params['type'] = guess_type_from_value(params.get('default')) or guess_type_from_name(variable)
+        params['type'] = hints.get(variable, None) or guess_type_from_value(params.get('default')) or guess_type_from_name(variable)
 
         return params
 
@@ -562,6 +562,9 @@ class PythonParser:
 
         arguments = re.search(r'^\s*def \w*\((.*)\)', line)
 
+        # Parse type hints
+        hints = dict(re.findall(r'(\w*)\s*:\s*(\w*\[[^:]*\]|\w*)\s*', arguments.group(1)))
+
         # Remove type hints
         arguments = re.sub(r':\s*(\w*\[[^:]*\]|\w*)\s*', "", arguments.group(1))
 
@@ -576,7 +579,7 @@ class PythonParser:
                 continue
 
             argument_type = 'keyword_arguments' if '=' in argument else 'arguments'
-            params = self.process_variable(argument)
+            params = self.process_variable(argument, hints)
             parsed_arguments[argument_type].append(params)
 
         return parsed_arguments
