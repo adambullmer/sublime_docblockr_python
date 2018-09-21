@@ -562,11 +562,14 @@ class PythonParser:
 
         arguments = re.search(r'^\s*def \w*\((.*)\)', line)
 
+        # Remove type hints
+        arguments = re.sub(r':\s*(\w*\[[^:]*\]|\w*)\s*', "", arguments.group(1))
+
         if not arguments:
             return None
 
         excluded_parameters = ['self', 'cls']
-        arguments = split_by_commas(arguments.group(1))
+        arguments = split_by_commas(arguments)
 
         for index, argument in enumerate(arguments):
             if index == 0 and argument in excluded_parameters:
