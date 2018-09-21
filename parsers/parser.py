@@ -599,9 +599,13 @@ class PythonParser:
         if len(match) == 0:
             return None
 
+        hint = re.search(r'^\s*def \w*\(.*\)\s*->\s*(.*):', contents)
+        if hint:
+            hint = hint.group(1)
+
         match = match[0]
         return_type = match[0] + 's'
-        return_value_type = guess_type_from_value(match[1])
+        return_value_type = hint or guess_type_from_value(match[1])
 
         return (return_type, {'type': return_value_type})
 
