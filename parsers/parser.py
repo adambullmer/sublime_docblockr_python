@@ -560,7 +560,7 @@ class PythonParser:
             'keyword_arguments': [],
         }
 
-        arguments = re.search(r'^\s*def \w*\((.*)\):\s*$', line)
+        arguments = re.search(r'^\s*def \w*\((.*)\)', line)
 
         if not arguments:
             return None
