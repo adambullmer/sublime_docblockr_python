@@ -563,10 +563,10 @@ class PythonParser:
         arguments = re.search(r'^\s*def\s+\w+\((.*)\)', line)
 
         # Parse type hints
-        hints = dict(re.findall(r'(\w+)\s*:\s*(\w+\[[^:]*\]|\w+)\s*', arguments.group(1)))
+        hints = dict(re.findall(r'(\w+)\s*:\s*([\w\.]+\[[^:]*\]|[\w\.]+)\s*', arguments.group(1)))
 
         # Remove type hints
-        arguments = re.sub(r':\s*(\w+\[[^:]*\]|\w+)\s*', "", arguments.group(1))
+        arguments = re.sub(r':\s*([\w\.]+\[[^:]*\]|[\w\.]+)\s*', "", arguments.group(1))
 
         if not arguments:
             return None
@@ -602,7 +602,7 @@ class PythonParser:
         if len(match) == 0:
             return None
 
-        hint = re.search(r'^\s*def\s+\w+\(.*\)\s*->\s*(\w+\[[^:]*\]|\w+)\s*:', contents)
+        hint = re.search(r'^\s*def\s+\w+\(.*\)\s*->\s*([\w\.]+\[[^:]*\]|[\w\.]+)\s*:', contents)
         if hint:
             hint = hint.group(1)
 
