@@ -52,10 +52,10 @@ def split_by_commas(string):
 
     # characters which open a section inside which commas are not separators between different
     # arguments
-    open_quotes = '"\'<({'
+    open_quotes = '"\'<({['
     # characters which close the section. The position of the character here should match the
     # opening indicator in `open_quotes`
-    close_quotes = '"\'>)}'
+    close_quotes = '"\'>)}]'
 
     matching_quote = ''
     inside_quotes = False
