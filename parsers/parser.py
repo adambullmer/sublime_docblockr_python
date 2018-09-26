@@ -383,7 +383,7 @@ class PythonParser:
 
         return {}
 
-    def process_variable(self, variable):
+    def process_variable(self, variable, hints={}):
         """Process an individual variable.
 
         Determines programmatically what the assumed type of the variable is,
@@ -407,7 +407,7 @@ class PythonParser:
             params['default'] = pieces[1].strip()
 
         params['name'] = variable
-        params['type'] = guess_type_from_value(params.get('default')) or guess_type_from_name(variable)
+        params['type'] = hints.get(variable, None) or guess_type_from_value(params.get('default')) or guess_type_from_name(variable)
 
         return params
 
@@ -560,20 +560,26 @@ class PythonParser:
             'keyword_arguments': [],
         }
 
-        arguments = re.search(r'^\s*def \w*\((.*)\):\s*$', line)
+        arguments = re.search(r'^\s*def\s+\w+\((.*)\)', line)
+
+        # Parse type hints
+        hints = dict(re.findall(r'(\w+)\s*:\s*([\w\.]+\[[^:]*\]|[\w\.]+)\s*', arguments.group(1)))
+
+        # Remove type hints
+        arguments = re.sub(r':\s*([\w\.]+\[[^:]*\]|[\w\.]+)\s*', "", arguments.group(1))
 
         if not arguments:
             return None
 
         excluded_parameters = ['self', 'cls']
-        arguments = split_by_commas(arguments.group(1))
+        arguments = split_by_commas(arguments)
 
         for index, argument in enumerate(arguments):
             if index == 0 and argument in excluded_parameters:
                 continue
 
             argument_type = 'keyword_arguments' if '=' in argument else 'arguments'
-            params = self.process_variable(argument)
+            params = self.process_variable(argument, hints)
             parsed_arguments[argument_type].append(params)
 
         return parsed_arguments
@@ -596,9 +602,13 @@ class PythonParser:
         if len(match) == 0:
             return None
 
+        hint = re.search(r'^\s*def\s+\w+\(.*\)\s*->\s*([\w\.]+\[[^:]*\]|[\w\.]+)\s*:', contents)
+        if hint:
+            hint = hint.group(1)
+
         match = match[0]
         return_type = match[0] + 's'
-        return_value_type = guess_type_from_value(match[1])
+        return_value_type = hint or guess_type_from_value(match[1])
 
         return (return_type, {'type': return_value_type})
 
