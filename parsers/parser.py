@@ -632,7 +632,8 @@ class PythonParser:
 
         raises = []
         for exception in match:
-            raises.append(exception[1])
+            if exception[1] not in raises:
+                raises.append(exception[1])
 
         return raises
 
