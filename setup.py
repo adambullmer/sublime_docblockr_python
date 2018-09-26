@@ -24,7 +24,7 @@ if __name__ == '__main__':
 
     setup(
         name='DocBlockr Python',
-        version='1.6.0',
+        version='1.6.1',
         description='',
         author='Adam Bullmer',
         author_email='psycodrumfreak@gmail.com',
