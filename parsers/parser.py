@@ -383,7 +383,7 @@ class PythonParser:
 
         return {}
 
-    def process_variable(self, variable, hints={}):
+    def process_variable(self, variable, hints=None):
         """Process an individual variable.
 
         Determines programmatically what the assumed type of the variable is,
@@ -392,9 +392,15 @@ class PythonParser:
         Arguments:
             variable {String} -- varibale definition line
 
+        Keyword Arguments:
+            hints {dict} -- dictionary to store typehints about the vars (default: None)
+
         Returns:
             {Dictionary} -- Dictionary of attributes to create snippets from
         """
+        if hints is None:
+            hints = {}
+
         params = {
             'name': None,
             'type': None,
