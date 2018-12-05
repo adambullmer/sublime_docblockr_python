@@ -43,6 +43,7 @@ def escape(string):
 
     Returns:
         {String} String with escaped characters
+
     """
     return string.replace('$', r'\$').replace('{', r'\{').replace('}', r'\}')
 
@@ -101,7 +102,7 @@ class DocblockrPythonCommand(sublime_plugin.TextCommand):
         write(self.view, snippet)
 
     def initialize(self, view):
-        """Setup the command's settings.
+        """Set up the command's settings.
 
         Begins preparsing the file to gather some basic information.
         - Which parser to use
@@ -141,6 +142,7 @@ class DocblockrPythonCommand(sublime_plugin.TextCommand):
 
         Returns:
             str -- sublime text formatted snippet string
+
         """
         project_formatter = self.project_settings.get('formatter', None)
         formatter = get_formatter(project_formatter or get_setting('formatter'))()
