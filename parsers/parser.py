@@ -413,7 +413,9 @@ class PythonParser:
             params['default'] = pieces[1].strip()
 
         params['name'] = variable
-        params['type'] = hints.get(variable, None) or guess_type_from_value(params.get('default')) or guess_type_from_name(variable)
+        params['type'] = hints.get(variable, None) or \
+            guess_type_from_value(params.get('default')) or \
+            guess_type_from_name(variable)
 
         return params
 

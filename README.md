@@ -77,10 +77,43 @@ class MyFormatter(Base):
 **Note:** The console should yell at you if you didn't write all the abstract methods. Be sure to read the docs on the `Base` formatter
 to make sure you understand all the caveats of each formatter function.
 
+Local Development
+-----------------
+
+Below are the instructions to work on this repo locally.
+
+1. Clone the repo.
+1. Uninstall the plugin from sublime text.
+1. Symlink the github repo into your sublime text packages directory.
+    - Debian example:
+```bash
+ln -s <absolute/path/to/github/repo/sublime_docblockr_python> $HOME/.config/sublime-text-3/Packages/Docblockr_Python
+```
+1. There are no runtime dependencies
+1. Pay attention to the sublime console ```ctrl + ` ```
+
+
+Testing Changes
+---------------
+
+In addition to the setup instructions above, testing will require additinoal setup.
+
+**System Requirements:**
+- [pyenv](https://github.com/pyenv/pyenv)
+- [pipenv](https://pipenv.readthedocs.io/en/latest/)
+
+**Setup:**
+1. Install depedencies through pipenv `pipenv install --dev`
+1. Run unit tests `pipenv run tox`
+    - [py.test](https://docs.pytest.org/en/latest/) unit tests
+    - [flake8](http://flake8.pycqa.org/en/latest/) linting
+    - [pydocstyle](http://www.pydocstyle.org/en/2.1.1/) (formerly PEP257) docstring checker
+
 
 Known Issues
 ------------
 - Only detects closed docstring if it is on a line of the same indentation, and has no text in front of it. Single Line docstrings are converted to block
+- The tests run in python `3.4.3`, however sublime's python version is `3.3.6`. This is due to the difficulty of getting a working version of 3.3.6 in a dev environment, and the differences should be minimal.
 
 
 Roadmap
@@ -88,6 +121,9 @@ Roadmap
 Things I want to do wtih this project. Not necessarily an exhaustive or prioritized list.
 
 - Unit Tests!
+    - Needs a test harness of some sort for sublime internals.
+- CI, probably circleci
+- Coverage reporting
 - More completions!
 - Javadoc style formatter
 - Keyboard Shortcuts
