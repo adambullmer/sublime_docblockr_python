@@ -1,5 +1,8 @@
 DocBlockr for Python
 ====================
+
+[![codecov](https://codecov.io/gh/adambullmer/sublime_docblockr_python/branch/master/graph/badge.svg)](https://codecov.io/gh/adambullmer/sublime_docblockr_python)
+
 Based off the [DocBlockr](https://github.com/spadgos/sublime-jsdocs) project, This extension provides the similar funtionality but for python docstrings.
 The default formatter for this plugin is designed around [PEP-257](https://www.python.org/dev/peps/pep-0257/) compliance but with more verbosity: Added variable types, listing class extensions, and listing decorators.
 The main goal of this project is to help developer provide better documentation by giving easy and consistent formatting.
