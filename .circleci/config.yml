@@ -1,0 +1,32 @@
+defaults: &defaults
+  working_directory: ~/sublime_docblockr_python
+  docker:
+    - image: circleci/python:3.4
+
+version: 2
+jobs:
+  test:
+    << : *defaults
+    steps:
+      - checkout
+      - run:
+          name: install pipenv
+          command: pip install pipenv
+      - run:
+          name: install dependencies
+          command: |
+            pipenv install
+            pipenv install --dev
+      - run:
+          name: run tests
+          command: pipenv run tox
+      - store_artifacts:
+          path: pytest
+      - store_test_results:
+          path: pytest
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - test
