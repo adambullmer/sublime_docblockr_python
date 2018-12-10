@@ -10,8 +10,9 @@ pytest = "*"
 pytest-cov = "*"
 pytest-sugar = "*"
 pydocstyle = "*"
+codecov = "*"
 
 [packages]
 
 [requires]
-python_version = "3.4.3"
+python_version = "3.4"
