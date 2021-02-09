@@ -26,7 +26,7 @@ class Pep0257Formatter(Base):
                 description=self._generate_field('description'),
             )
 
-        if len(attributes['arguments']) == 0:
+        if not attributes['arguments']:
             section = ''
 
         section += self.keyword_arguments(attributes['keyword_arguments'])
@@ -38,7 +38,7 @@ class Pep0257Formatter(Base):
         section = '\nKeyword arguments:\n'
         template = '\t{name} -- {description} (default: {{{default}}})\n'
 
-        if len(attributes) == 0:
+        if not attributes:
             return ''
 
         for attr in attributes:

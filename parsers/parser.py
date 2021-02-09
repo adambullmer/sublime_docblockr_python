@@ -2,8 +2,8 @@
 import logging
 import re
 
-log = logging.getLogger(__name__)
 
+log = logging.getLogger(__name__)
 
 def get_parser(view):
     """Return the class of the parser to use.
@@ -191,13 +191,10 @@ def guess_type_from_value(value):
     if value in ['True', 'False']:
         return 'bool'
 
-    if value[:2] in ["r'", 'r"', "R'", 'R"']:
-        return 'regexp'
-
     if value[:2] in ["u'", 'u"', "U'", 'U"']:
         return 'unicode'
 
-    if value[:7] == 'lambda ':
+    if value.strip().startswith('lambda '):
         return 'function'
 
     return None
@@ -273,7 +270,7 @@ class PythonParser:
         for current_line in read_next_line(view, position, True):
             # Not an empty line
             current_line_string = view.substr(current_line).strip()
-            if len(current_line_string) is 0:
+            if not current_line_string:
                 continue
 
             # Ignore comments
@@ -293,7 +290,7 @@ class PythonParser:
             if docstring_type is None:
                 if re.match(r'^\s*(class )', current_line_string):
                     docstring_type = 'class'
-                elif re.match(r'^\s*(def )', current_line_string):
+                elif re.match(r'^\s*(async )?\s*(def )', current_line_string):
                     docstring_type = 'function'
                 else:
                     docstring_type = 'module'
@@ -332,7 +329,7 @@ class PythonParser:
         for current_line in read_next_line(view, position):
             # Not an empty line
             current_line_string = view.substr(current_line).rstrip()
-            if len(current_line_string) == 0:
+            if not current_line_string:
                 continue
 
             # Remove comments
@@ -429,11 +426,10 @@ class PythonParser:
             {Dictionary} -- Dictionary of attributes to create snippets from
         """
         variables = []
-        contents + '\n'
-        regex = re.compile(r'^\s*((?:(?!from |import |def |class |@).)+$)', re.MULTILINE)
-        matches = re.findall(regex, contents)
+        regex = re.compile(r'^\s*((?:(?!from |import |def |async\s+def |class |@).)+$)', re.MULTILINE)
+        matches = regex.findall(contents)
 
-        if len(matches) == 0:
+        if not matches:
             return None
 
         for match in matches:
@@ -481,12 +477,7 @@ class PythonParser:
             return None
 
         extends = split_by_commas(extends.group(1))
-        parsed_extends = []
-        for extend in extends:
-            if extend == 'object':
-                continue
-
-            parsed_extends.append(extend)
+        parsed_extends = [ex for ex in extends if ex.strip() != 'object']
 
         return parsed_extends
 
@@ -542,7 +533,7 @@ class PythonParser:
 
             match = re.findall(r'^\s*@([a-zA-Z0-9_\.]*)(\(.*\)|$)', line)
 
-            if len(match) == 0:
+            if not match:
                 continue
 
             decorator = match[0][0]
@@ -568,7 +559,7 @@ class PythonParser:
             'keyword_arguments': [],
         }
 
-        arguments = re.search(r'^\s*def\s+\w+\((.*)\)', line)
+        arguments = re.search(r'^\s*(?:async )?\s*def\s+\w+\((.*)\)', line)
 
         # Parse type hints
         hints = dict(re.findall(r'(\w+)\s*:\s*([\w\.]+\[[^:]*\]|[\w\.]+)\s*', arguments.group(1)))
@@ -604,20 +595,19 @@ class PythonParser:
         Returns:
             {tuple} -- type of return and a dict for the return value type
         """
-        regex = re.compile(r'^\s*(return|yield) (\w+)', re.MULTILINE)
-        match = re.findall(regex, contents)
+        regex = re.compile(r'^\s*(?P<kind>return|yield)\s+(?P<ret>[\w\.]+)', re.MULTILINE)
+        match = regex.search(contents)
 
-        if len(match) == 0:
+        if not match:
             return None
 
-        hint = re.search(r'^\s*def\s+\w+\(.*\)\s*->\s*([\w\.]+\[[^:]*\]|[\w\.]+)\s*:', contents)
+        hint = re.search(r'^\s*(?:async )?\s*def\s+\w+\(.*\)\s*->\s*([\w\.]+\[[^:]*\]|[\w\.]+)\s*:', contents)
         if hint:
             hint = hint.group(1)
 
-        match = match[0]
-        return_type = match[0] + 's'
-        return_value_type = hint or guess_type_from_value(match[1])
-
+        return_type = match.group('kind') + 's'
+        return_value_type = hint or guess_type_from_value(match.group('ret'))
+        
         return (return_type, {'type': return_value_type})
 
     def parse_raises(self, contents):
@@ -632,16 +622,13 @@ class PythonParser:
         Returns:
             {list} -- list of exception types
         """
-        regex = re.compile(r'^\s*(raise) (\w+)', re.MULTILINE)
-        match = re.findall(regex, contents)
+        regex = re.compile(r'^\s*(?:raise)\s+([\w\.]+)', re.MULTILINE)
+        match = regex.findall(contents)
 
-        if len(match) == 0:
+        if not match:
             return None
 
-        raises = []
-        for exception in match:
-            if exception[1] not in raises:
-                raises.append(exception[1])
+        raises = list(set(match))
 
         return raises
 
@@ -659,13 +646,13 @@ class PythonParser:
         Returns:
             {Dictionary} Parsed valued group by type
         """
-        if not re.match(r'^\s*(def )', line):
+        if not re.match(r'^\s*(async )?\s*(def )', line):
             return None
 
         parsed_function = []
 
         decorators = self.parse_decorators(line, contents)
-        if len(decorators) > 0:
+        if decorators:
             parsed_function.append(('decorators', decorators))
 
         arguments = self.parse_arguments(line)
@@ -717,7 +704,7 @@ class PythonParser:
         for current_line in read_next_line(view, position):
             # Not an empty line
             current_line_string = view.substr(current_line).rstrip()
-            if len(current_line_string) is 0:
+            if not current_line_string:
                 continue
 
             # Not on a more indented line
@@ -726,7 +713,7 @@ class PythonParser:
                 continue
 
             # Still within the same indentation level
-            if current_indentation < indentation_level:
+            elif current_indentation < indentation_level:
                 break
 
             # Line only contains whitespace and """
