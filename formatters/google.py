@@ -28,7 +28,7 @@ class GoogleFormatter(Base):
 
         section += self.keyword_arguments(attributes['keyword_arguments'])
 
-        if len(attributes['arguments']) == 0 and len(attributes['keyword_arguments']) == 0:
+        if not attributes['arguments'] and not attributes['keyword_arguments']:
             section = ''
 
         return section

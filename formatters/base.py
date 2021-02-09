@@ -6,10 +6,8 @@ from .registry import register
 
 def counter():
     """Simple Iteratable Counter.
-
     Starting from 0, will continue to give a new counter number every time
     this function is iterated over, or with the use of `next()`
-
     Yields:
         {int} Current Counter Number
     """
@@ -21,7 +19,6 @@ def counter():
 
 class FormatterMeta(ABCMeta):
     """Register the class in the formatter.
-
     Extends:
         ABCMeta
     """
@@ -35,21 +32,17 @@ class FormatterMeta(ABCMeta):
 
 class Base(metaclass=FormatterMeta):
     """Base Formatter Class.
-
     This class provides the template that all inheriting Formatters should follow.
     By using this base class, the formatter will be registered with the formatter
     registry and therefore usable. Apart from the abstract methods, there are some
     important convenience methods setup on the base class. It is also important to
     note that any inheriting class _must_ set the `name` variable if it wants to
     be registered in the registry.
-
     - _generate_field -- Generates tabbable snippet fields.
     - summary -- Generic summary line.
     - description -- Generic description line.
-
     Extends:
         metaclass=FormatterMeta
-
     Variables:
         name {str} -- The name the formatter will be registered under.
         tab_index {generator} -- Provides a simple count generator for convenience
@@ -81,16 +74,12 @@ class Base(metaclass=FormatterMeta):
 
     def _generate_field(self, name, value=None):
         """Make a Sublime Text snippet field.
-
         If a value is passed and it is not None, it will be returned. Otherwise,
         this will generate a snippet field in the next tabbable index.
-
         Arguments:
             name {str} -- Name of the placeholder text
-
         Keyword Arguments:
             value {str} -- Text to replace the field if not None (default: {None})
-
         Returns:
             str -- Snippet Field
         """
